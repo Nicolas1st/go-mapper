@@ -1,0 +1,28 @@
+{{ define "main" }}
+    <main class="sign-up-form-content">
+        <h1 class="page-title"> Sign Up </h1>
+        <form class="order-parking-form">
+            <div class="mb-3">
+                <label for="login" class="form-label"> Login </label>
+                <input type="text" class="form-control" name="login" id="login" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label"> Email </label>
+                <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label"> Password </label>
+                <input type="password" class="form-control" name="password" id="password" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="passwordRepeat" class="form-label"> Confirm Password </label>
+                <input type="password" class="form-control" name="passwordRepeat" id="passwordRepeat" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;"> Sign Up </button>
+        </form>
+    </main>
+{{ end }}

@@ -1,0 +1,50 @@
+{{ define "main" }}
+    <main class="main">
+        <h1 class="page-title"> Choose Parking Place</h1>
+        <div class="main-content">
+
+            <div id="map"></div>
+
+            <form class="order-parking-form">
+                <h2> Address </h2>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="address-field" placeholder="Click on location" readonly>
+                </div>
+
+                    <div class="mb-3 time-field">
+                        <h2> Start time </h2>
+                        <div class="mb-3">
+                            <label for="start-day" class="form-label"> Day </label>
+                            <input type="date" class="form-control" name="start-day" id="start-date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start-hour" class="form-label"> Hour </label>
+                            <input type="number" min="0" max="23" class="form-control" name="start-hour" id="start-hour" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start-minute" class="form-label"> Minute </label>
+                            <input type="number" min="0" max="59" class="form-control" name="start-minute" id="start-minute" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h2> End time </h2>
+                        <div class="mb-3 time-field">
+                            <label for="end-day" class="form-label"> Day </label>
+                            <input type="date" class="form-control" name="end-day" id="end-date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end-hour" class="form-label"> Hour </label>
+                            <input type="number" min="0" max="23" class="form-control" name="end-hour" id="end-hour" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end-minute" class="form-label"> Minute </label>
+                            <input type="number" min="0" max="59" class="form-control" name="end-minute" id="end-minute" required>
+                        </div>
+                    </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Order </button>
+            </form>
+        </div>
+    </main>
+{{ end }}
