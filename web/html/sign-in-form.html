@@ -1,10 +1,10 @@
 {{ define "main" }}
     <main class="sign-in-form-content">
         <h1 class="page-title"> Sign In </h1>
-        <form class="order-parking-form">
+        <form class="order-parking-form" method="POST" action="/auth/authenticate">
             <div class="mb-3">
-                <label for="login" class="form-label"> Login </label>
-                <input type="text" class="form-control" name="login" id="login" required>
+                <label for="username" class="form-label"> Login </label>
+                <input type="text" class="form-control" name="username" id="username" required>
             </div>
 
             <div class="mb-3">
