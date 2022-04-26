@@ -14,6 +14,7 @@ type User struct {
 
 type ParkingPlace struct {
 	gorm.Model
+	Address       string
 	NumberOfSlots int
 	Latitude      float64
 	Longitude     float64
