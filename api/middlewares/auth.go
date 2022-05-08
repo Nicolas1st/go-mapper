@@ -5,24 +5,38 @@ import (
 	"yaroslavl-parkings/api/auth"
 )
 
-type AuthMiddleware func(http.HandlerFunc) http.HandlerFunc
-
 type SessionStorageInterface interface {
 	IsSessionValid(sessionToken string) bool
 }
 
-func NewAuthMiddleware(sessionStorage SessionStorageInterface, redirectUnauthenticated http.HandlerFunc) AuthMiddleware {
+func NewOnlyAuth(
+	sessionStorage SessionStorageInterface,
+	redirectIfNot http.HandlerFunc,
+) Middleware {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie(auth.AuthCookieName)
-			if err == http.ErrNoCookie {
-				redirectUnauthenticated(w, r)
+			if err != nil {
+				redirectIfNot(w, r)
 				return
 			}
 
-			// checking by session token
 			if !sessionStorage.IsSessionValid(cookie.Value) {
-				redirectUnauthenticated(w, r)
+				redirectIfNot(w, r)
+				return
+			}
+
+			next(w, r)
+		}
+	}
+}
+
+func NewOnlyNotAuth(redirectIfNot http.HandlerFunc) Middleware {
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			_, err := r.Cookie(auth.AuthCookieName)
+			if err == nil {
+				redirectIfNot(w, r)
 				return
 			}
 
