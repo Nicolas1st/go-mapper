@@ -11,5 +11,6 @@ type SessionStorageInterface interface {
 }
 
 type DatabaseInterface interface {
-	GetUserByUsername(username string) (*model.User, error)
+	GetUserByName(username string) (*model.User, error)
+	CreateNewUser(username, passwordHash string, role model.Role) (*model.User, error)
 }
