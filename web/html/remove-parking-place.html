@@ -1,0 +1,16 @@
+{{ define "main" }}
+    <main class="main">
+        <h1 class="page-title"> Choose Parking Place</h1>
+        <div class="main-content">
+
+            <div id="map"></div>
+            <form class="remove-parking-place-form" action="/parkings" method="POST">
+                <input type="hidden" id="id" name="id">
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Remove </button>
+            </form>
+        </div>
+    </main>
+
+    <script src="/static/dist/removeParkingPlace.js"></script>
+    
+{{ end }}
