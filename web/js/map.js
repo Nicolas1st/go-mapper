@@ -19,7 +19,9 @@ export function displayMarker(
 ) {
     // create DOM element for the marker
     let el = document.createElement("div");
-    el.innerText = parking.NumberOfSlots;
+    if (parking.NumberOfSlots !== undefined) {
+        el.innerText = parking.NumberOfSlots;
+    }
     el.dataset.id = parking.ID;
     el.classList.add("marker");
 

@@ -33,7 +33,7 @@ map.on("click", function (e) {
     } catch {
     }
 
-    marker = displayMarker(e.lngLat.lat, e.lngLat.lng, "Add this place");
+    marker = displayMarker({Latitude: e.lngLat.lat, Longitude: e.lngLat.lng, NumberOfSlots: numberOfSlotsFields.value});
     marker.addTo(map);
 });
 
