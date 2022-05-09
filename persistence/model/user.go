@@ -15,3 +15,7 @@ type User struct {
 	Role         Role
 	PasswordHash string
 }
+
+func (user *User) IsAdmin() bool {
+	return user.Role == Admin
+}
