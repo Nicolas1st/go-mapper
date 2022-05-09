@@ -6,13 +6,15 @@ const ExpiryPeriod time.Duration = 30 * time.Minute
 
 type Session struct {
 	UserID    uint
+	User      *User
 	ExpiresAt time.Time
 }
 
-func NewSession(userID uint) *Session {
+func NewSession(user *User) *Session {
 	return &Session{
-		UserID: userID,
-		// keep the user logged in for 5 minutes
+		UserID: user.ID,
+		User:   user,
+		// keep the user logged in for 30 minutes
 		ExpiresAt: time.Now().Add(ExpiryPeriod),
 	}
 }
