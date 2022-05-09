@@ -63,16 +63,16 @@ func (storage *SessionStorage) RemoveSession(sessionToken string) {
 
 // IsSessionValid checks whether the session is valid,
 // it checks if it exists and is not too old
-func (storage *SessionStorage) IsSessionValid(sessionToken string) bool {
+func (storage *SessionStorage) IsSessionValid(sessionToken string) (*model.Session, bool) {
 	session, exists := storage.sessions[sessionToken]
 	if !exists {
-		return false
+		return session, false
 	}
 
 	if session.IsExpired() {
 		storage.RemoveSession(sessionToken)
-		return false
+		return session, false
 	}
 
-	return true
+	return session, true
 }
