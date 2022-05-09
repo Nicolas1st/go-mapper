@@ -15,7 +15,7 @@ func (db Database) StoreParkingPlace(parkingPlace *model.ParkingPlace) (*model.P
 }
 
 func (db Database) RemoveParkingPlaceByID(id uint) {
-	db.db.Delete(model.ParkingPlace{}, id)
+	db.db.Delete(&model.ParkingPlace{}, id)
 }
 
 func (db Database) GetAllParkingPlaces() []model.ParkingPlace {
