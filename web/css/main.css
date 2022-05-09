@@ -1,0 +1,122 @@
+body {
+    margin: 0;
+    padding: 0;
+    padding-top: 30px;
+    height: 100vh;
+}
+
+.sign-in-form-content, .sign-up-form-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    width: 330px;
+    margin: 30px auto;
+}
+
+.main {
+    margin: 30px auto;
+    height: 80%;
+    width: fit-content;
+}
+
+.page-title {
+    padding: 16px 0;
+}
+
+#map {
+    min-height: 800px;
+    min-width: 800px;
+    max-height: 900px;
+    max-width: 900px;
+    top: 0;
+    bottom: 0;
+}
+
+.marker {
+    background-image: url("/static/img/car.jpg");
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-size: 20px;
+}
+
+.mapboxgl-popup {
+    max-width: 200px;
+}
+
+.order-parking-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.add-parking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+.time-fields {
+    min-width: 330px;
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.time-field {
+    max-width: 100%;
+}
+
+@media screen and (max-width: 1260px){
+    .main-content {
+        flex-wrap: wrap;
+        justify-content: start;
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 1000px){
+    #map {
+        min-height: 600px;
+        min-width: 600px;
+        max-height: 700px;
+        max-width: 700px;
+    }
+}
+
+@media screen and (max-width: 700px){
+    #map {
+        min-height: 400px;
+        min-width: 400px;
+        max-height: 500px;
+        max-width: 500px;
+    }
+}
+
+@media screen and (max-width: 480px){
+    #map {
+        min-height: 320px;
+        min-width: 320px;
+        max-height: 320px;
+        max-width: 320px;
+    }
+}
