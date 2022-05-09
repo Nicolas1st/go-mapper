@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-const ExpiryPeriod time.Duration = 5 * time.Minute
+const ExpiryPeriod time.Duration = 30 * time.Minute
 
 type Session struct {
 	UserID    uint
