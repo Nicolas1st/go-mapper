@@ -22,7 +22,7 @@ func (resource *AuthDependencies) Authenticate(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	session := model.NewSession(user.ID)
+	session := model.NewSession(user)
 	token, expiryTime := resource.sessionStorage.StoreSession(session)
 	http.SetCookie(w, &http.Cookie{
 		Name:    AuthCookieName,
