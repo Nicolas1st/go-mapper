@@ -1,0 +1,43 @@
+{{ define "main" }}
+    <main class="main">
+        <h1 class="page-title"> Choose Parking Place</h1>
+        <div class="main-content">
+
+            <div id="map"></div>
+
+            <form class="add-parking-place" action="/parkings" method="POST">
+                <div class="mb-3 time-field">
+                    <h2> Address </h2>
+                    <div class="mb-3">
+                        <label for="address" class="form-label"> Address </label>
+                        <input type="text" class="form-control" name="address" id="address" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h2> Coordinates </h2>
+                    <div class="mb-3 time-field">
+                        <label for="longitude" class="form-label"> Longitude </label>
+                        <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Click on location" required readonly>
+                    </div>
+                    <div class="mb-3 time-field">
+                        <label for="latitude" class="form-label"> Latitude </label>
+                        <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Click on location" required readonly>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h2> Number of Places </h2>
+                    <div class="mb-3 time-field">
+                        <label for="numberOfSlots" class="form-label"> Number Of Slots </label>
+                        <input type="number" min="1" class="form-control" name="numberOfSlots" id="numberOfSlots" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Add </button>
+            </form>
+        </div>
+    </main>
+
+    <script src="/static/dist/addParkingPlace.js"></script>
+{{ end }}
