@@ -12,7 +12,7 @@ type removeParkingPage struct {
 }
 
 func NewRemoveParkingPage(pathToTemplates string) *removeParkingPage {
-	templateFileNames := []string{"layout.html", "admin/parkings/remove-parking-place.html", "signed-in-navbar.html", "footer.html"}
+	templateFileNames := []string{"layout.html", "admin/parkings/remove-parking-place.html", "admin-navbar.html", "footer.html"}
 	for i, fileName := range templateFileNames {
 		templateFileNames[i] = path.Join(pathToTemplates, fileName)
 	}

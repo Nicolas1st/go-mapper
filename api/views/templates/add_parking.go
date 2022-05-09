@@ -12,7 +12,7 @@ type addParkingPage struct {
 }
 
 func NewAddParkingPage(pathToTemplates string) *addParkingPage {
-	templateFileNames := []string{"layout.html", "admin/parkings/add-parking-place.html", "signed-in-navbar.html", "footer.html"}
+	templateFileNames := []string{"layout.html", "admin/parkings/add-parking-place.html", "admin-navbar.html", "footer.html"}
 	for i, fileName := range templateFileNames {
 		templateFileNames[i] = path.Join(pathToTemplates, fileName)
 	}
