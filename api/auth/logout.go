@@ -1,9 +1,6 @@
 package auth
 
-import (
-	"net/http"
-	"time"
-)
+import "net/http"
 
 func (resource *AuthDependencies) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(AuthCookieName)
@@ -14,10 +11,5 @@ func (resource *AuthDependencies) Logout(w http.ResponseWriter, r *http.Request)
 
 	resource.sessionStorage.RemoveSession(cookie.Value)
 
-	http.SetCookie(w, &http.Cookie{
-		Name:    AuthCookieName,
-		Value:   "",
-		Path:    CookiePath,
-		Expires: time.Now(),
-	})
+	RemoveAuthCookie(w)
 }
