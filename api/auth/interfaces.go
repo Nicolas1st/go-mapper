@@ -8,6 +8,7 @@ import (
 type SessionStorageInterface interface {
 	StoreSession(session *model.Session) (string, time.Time)
 	RemoveSession(sessionToken string)
+	IsSessionValid(sessionToken string) (*model.Session, bool)
 }
 
 type DatabaseInterface interface {
