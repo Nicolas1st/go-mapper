@@ -70,7 +70,6 @@ func (storage *SessionStorage) IsSessionValid(sessionToken string) (*model.Sessi
 	}
 
 	if session.IsExpired() {
-		storage.RemoveSession(sessionToken)
 		return session, false
 	}
 
