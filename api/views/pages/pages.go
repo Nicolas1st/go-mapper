@@ -7,12 +7,14 @@ type PublicPages struct {
 
 type PrivatePages struct {
 	MakeOrder *Page
+	Profile   *Page
 }
 
 type AdminPages struct {
 	MakeOrder     *Page
 	AddParking    *Page
 	RemoveParking *Page
+	Profile       *Page
 }
 
 type Pages struct {
@@ -22,19 +24,27 @@ type Pages struct {
 }
 
 func NewPages(pathToTemplates string) *Pages {
+	mainTemplateName := "layout"
+	commonFiles := []string{"layout.html", "footer.html"}
+
+	commonPublicFiles := append(commonFiles, "not-signed-in-navbar.html")
 	public := &PublicPages{
-		SignIn: BuildPage("SignIn", pathToTemplates, "layout", "layout.html", "sign-in-form.html", "not-signed-in-navbar.html", "footer.html"),
-		SignUp: BuildPage("SignUp", pathToTemplates, "layout", "layout.html", "sign-up-form.html", "not-signed-in-navbar.html", "footer.html"),
+		SignIn: BuildPage("SignIn", pathToTemplates, mainTemplateName, append(commonPublicFiles, "sign-in-form.html")...),
+		SignUp: BuildPage("SignUp", pathToTemplates, mainTemplateName, append(commonPublicFiles, "sign-up-form.html")...),
 	}
 
+	commonPrivateFiles := append(commonFiles, "signed-in-navbar.html")
 	private := &PrivatePages{
-		MakeOrder: BuildPage("PrivateMakeOrder", pathToTemplates, "layout", "layout.html", "make-order-form.html", "signed-in-navbar.html", "footer.html"),
+		MakeOrder: BuildPage("PrivateMakeOrder", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "make-order-form.html")...),
+		Profile:   BuildPage("ProfilePage", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "profile.html")...),
 	}
 
+	commonAdminFiles := append(commonFiles, "admin-navbar.html")
 	admin := &AdminPages{
-		MakeOrder:     BuildPage("AdminMakeOrder", pathToTemplates, "layout", "layout.html", "make-order-form.html", "admin-navbar.html", "footer.html"),
-		AddParking:    BuildPage("AdminAddParking", pathToTemplates, "layout", "layout.html", "admin/parkings/add-parking-place.html", "admin-navbar.html", "footer.html"),
-		RemoveParking: BuildPage("AdminRemoveParking", pathToTemplates, "layout", "layout.html", "admin/parkings/remove-parking-place.html", "admin-navbar.html", "footer.html"),
+		MakeOrder:     BuildPage("AdminMakeOrder", pathToTemplates, mainTemplateName, append(commonAdminFiles, "make-order-form.html")...),
+		AddParking:    BuildPage("AdminAddParking", pathToTemplates, mainTemplateName, append(commonAdminFiles, "admin/parkings/add-parking-place.html")...),
+		RemoveParking: BuildPage("AdminRemoveParking", pathToTemplates, mainTemplateName, append(commonAdminFiles, "admin/parkings/remove-parking-place.html")...),
+		Profile:       BuildPage("ProfilePage", pathToTemplates, mainTemplateName, append(commonAdminFiles, "profile.html")...),
 	}
 
 	return &Pages{
