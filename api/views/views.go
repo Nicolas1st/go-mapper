@@ -1,36 +1,103 @@
 package views
 
 import (
+	"fmt"
 	"net/http"
-	"yaroslavl-parkings/api/views/templates"
+	"yaroslavl-parkings/api"
+	"yaroslavl-parkings/api/views/pages"
+	"yaroslavl-parkings/persistence/model"
 )
 
-type viewsResource struct {
-	templates *templates.Templates
+// dependencies
+type SessionsInterface interface {
+	IsSessionValid(sessionToken string) (*model.Session, bool)
 }
 
-func NewViews(templates *templates.Templates) *viewsResource {
-	return &viewsResource{
-		templates: templates,
+type viewsDependencies struct {
+	pages    *pages.Pages
+	sessions SessionsInterface
+}
+
+type Views struct {
+	SignIn             http.HandlerFunc
+	SignUp             http.HandlerFunc
+	MakeOrder          http.HandlerFunc
+	AddParkingPlace    http.HandlerFunc
+	RemoveParkingPlace http.HandlerFunc
+}
+
+func NewViews(
+	pathToTemplates string,
+	sessions SessionsInterface,
+) *Views {
+	dependencies := &viewsDependencies{
+		pages:    pages.NewPages(pathToTemplates),
+		sessions: sessions,
+	}
+
+	return &Views{
+		SignIn:             dependencies.SignIn,
+		SignUp:             dependencies.SignUp,
+		MakeOrder:          dependencies.MakeOrder,
+		AddParkingPlace:    dependencies.AddParkingPlace,
+		RemoveParkingPlace: dependencies.RemoveParkingPlace,
 	}
 }
 
-func (viewsResource *viewsResource) SignInView(w http.ResponseWriter, r *http.Request) {
-	viewsResource.templates.SignInPage.Execute(w)
+// SignIn - serves SignIn page
+func (d *viewsDependencies) SignIn(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuth(d.sessions, r) {
+		// redirect to the page for authenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+	} else {
+		fmt.Println(d.pages.Public.SignIn.Execute(w))
+	}
 }
 
-func (viewsResource *viewsResource) SignUpView(w http.ResponseWriter, r *http.Request) {
-	viewsResource.templates.SignUpPage.Execute(w)
+// SignUp - serves SignUp page
+func (d *viewsDependencies) SignUp(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuth(d.sessions, r) {
+		// redirect to the page for authenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+	} else {
+		fmt.Println(d.pages.Public.SignUp.Execute(w))
+	}
 }
 
-func (viewsResource *viewsResource) MakeOrderView(w http.ResponseWriter, r *http.Request) {
-	viewsResource.templates.MakeOrderPage.Execute(w)
+// MakeOrder - serves MakeOrder page
+func (d *viewsDependencies) MakeOrder(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.MakeOrder.Execute(w))
+	} else if api.IsAuth(d.sessions, r) {
+		fmt.Println(d.pages.Private.MakeOrder.Execute(w))
+	} else {
+		// redirection to the page for unauthenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+	}
 }
 
-func (viewsResource *viewsResource) AddParkingPlaceView(w http.ResponseWriter, r *http.Request) {
-	viewsResource.templates.AddParkingPage.Execute(w)
+// AddParkingPlace - serves AddParkingPlace page
+func (d *viewsDependencies) AddParkingPlace(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.AddParking.Execute(w))
+	} else if api.IsAuth(d.sessions, r) {
+		// redirect to the page for authenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+	} else {
+		// redirect to the page for unauthenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+	}
 }
 
-func (viewsResource *viewsResource) RemoveParkingPlaceView(w http.ResponseWriter, r *http.Request) {
-	viewsResource.templates.RemoveParkingPage.Execute(w)
+// RemoveParkingPlace - serves RemoveParkingPlace page
+func (d *viewsDependencies) RemoveParkingPlace(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.RemoveParking.Execute(w))
+	} else if api.IsAuth(d.sessions, r) {
+		// redirect to the page for authenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+	} else {
+		// redirect to the page for unauthenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+	}
 }
