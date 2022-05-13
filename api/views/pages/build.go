@@ -18,13 +18,14 @@ func buildTemplate(
 	}
 
 	// prepend filepath
-	for i, fileName := range templateNames {
-		templateNames[i] = path.Join(pathToTemplates, fileName)
+	withPaths := []string{}
+	for _, fileName := range templateNames {
+		withPaths = append(withPaths, path.Join(pathToTemplates, fileName))
 	}
 
 	// creating template
 	template := template.New(templateToExecute)
-	template, err := template.ParseFiles(templateNames...)
+	template, err := template.ParseFiles(withPaths...)
 
 	// stop the program exeuction if it's not possible to build the template
 	if err != nil {
