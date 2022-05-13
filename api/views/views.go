@@ -24,6 +24,7 @@ type Views struct {
 	MakeOrder          http.HandlerFunc
 	AddParkingPlace    http.HandlerFunc
 	RemoveParkingPlace http.HandlerFunc
+	Profile            http.HandlerFunc
 }
 
 func NewViews(
@@ -41,6 +42,7 @@ func NewViews(
 		MakeOrder:          dependencies.MakeOrder,
 		AddParkingPlace:    dependencies.AddParkingPlace,
 		RemoveParkingPlace: dependencies.RemoveParkingPlace,
+		Profile:            dependencies.ProfilePage,
 	}
 }
 
@@ -70,6 +72,18 @@ func (d *viewsDependencies) MakeOrder(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(d.pages.Admin.MakeOrder.Execute(w))
 	} else if api.IsAuth(d.sessions, r) {
 		fmt.Println(d.pages.Private.MakeOrder.Execute(w))
+	} else {
+		// redirection to the page for unauthenticated users
+		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+	}
+}
+
+// ProfilePage - serves Profile page
+func (d *viewsDependencies) ProfilePage(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.Profile.Execute(w))
+	} else if api.IsAuth(d.sessions, r) {
+		fmt.Println(d.pages.Private.Profile.Execute(w))
 	} else {
 		// redirection to the page for unauthenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
