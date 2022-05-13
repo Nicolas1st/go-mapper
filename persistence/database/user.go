@@ -11,14 +11,34 @@ func (wrapper *Database) GetAllUsers() ([]model.User, error) {
 	users := []model.User{}
 	return users, wrapper.db.Find(&users).Error
 }
-func (db *Database) CreateNewUser(username, passwordHash string, role model.Role) (*model.User, error) {
+func (db *Database) CreateNewUser(username, email, passwordHash string, role model.Role, age uint) (*model.User, error) {
 	user := &model.User{
 		Username:     username,
+		Email:        email,
+		Age:          age,
 		PasswordHash: passwordHash,
 		Role:         role,
 	}
 
 	return user, db.db.Create(user).Error
+}
+
+func (db *Database) UpdateUserAge(id, newAge uint) error {
+	user, err := db.GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	return db.db.Model(&user).Updates(model.User{Age: newAge}).Error
+}
+
+func (db *Database) UpdateUserEmail(id uint, newEmail string) error {
+	user, err := db.GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	return db.db.Model(&user).Updates(model.User{Email: newEmail}).Error
 }
 
 func (db *Database) RemoveUserByID(id uint) error {
