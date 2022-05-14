@@ -131,3 +131,21 @@ body {
 .col {
     flex-direction: column;
 }
+
+.orders {
+    margin-top: 90px;
+    width: 350px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    color: white;
+}
+
+.order {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    border-radius: 10px;
+}

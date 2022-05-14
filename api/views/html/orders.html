@@ -2,11 +2,9 @@
     <main class="sign-in-form-content">
         <div class="pricing-container">
             <h1> Pricings </h1>
-            <div>
+            <div class="orders">
                 {{ range .Data.Orders }}
-                    <div class="mb-3">
-                        <p> Sum <strong> {{ .Sum }}</strong> Sum <strong> {{ .Status }}</strong> </p>
-                    </div>
+                    <p> Sum <strong> {{ .Sum }}</strong> Sum <strong> {{ .Status }}</strong> </p>
                 {{ end }}
             </div>
         </div>
