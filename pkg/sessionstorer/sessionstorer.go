@@ -1,38 +1,48 @@
-package session
+package sessionstorer
 
 import (
 	"time"
-	"yaroslavl-parkings/persistence/model"
+	"yaroslavl-parkings/api"
 
 	"github.com/google/uuid"
 )
 
-type SessionStorage struct {
-	sessions     map[string]*model.Session
-	lastPurgedAt time.Time
+// SessionStorer - used a storage for user user sessions
+// session are automatically removed once they become expired
+type SessionStorer struct {
+	storage                 map[string]*api.Session
+	clearFromExpiredOncePer time.Duration
+	lastPurgedAt            time.Time
 }
 
-func NewSessionStorage() *SessionStorage {
-	return &SessionStorage{
-		sessions:     make(map[string]*model.Session),
-		lastPurgedAt: time.Now(),
+// NewSessionStorer - creates new session storer
+func NewSessionStorer(clearFromExpiredOncePer time.Duration) *SessionStorer {
+	return &SessionStorer{
+		storage:                 make(map[string]*api.Session),
+		clearFromExpiredOncePer: clearFromExpiredOncePer,
+		lastPurgedAt:            time.Now(),
 	}
 }
 
-func (storage *SessionStorage) purgeFromExpiredSessions() {
-	for token, session := range storage.sessions {
+// purgeFromExpiredSessions - removes all expired session based,
+// should not be called explicitly by the user
+// only for in-library use
+func (s *SessionStorer) purgeFromExpiredSessions() {
+	for token, session := range s.storage {
 		if session.IsExpired() {
-			delete(storage.sessions, token)
+			delete(s.storage, token)
 		}
 	}
 }
 
-func (storage *SessionStorage) StoreSession(session *model.Session) (string, time.Time) {
+// StoreSession - stores session in memory,
+// returns session token as string, and the expiration time
+func (s *SessionStorer) StoreSession(session *api.Session) (string, time.Time) {
 	// to avoid memory leaks the session are being purged
 	// It's done every expiry perdiod of one cookies elapses
 	// the persiod is defined in session.go
-	if time.Now().After(storage.lastPurgedAt.Add(model.ExpiryPeriod)) {
-		storage.purgeFromExpiredSessions()
+	if time.Now().After(s.lastPurgedAt.Add(s.clearFromExpiredOncePer)) {
+		s.purgeFromExpiredSessions()
 	}
 
 	defer func() {
@@ -46,30 +56,32 @@ func (storage *SessionStorage) StoreSession(session *model.Session) (string, tim
 	var sessionToken string
 	for {
 		sessionToken = uuid.NewString()
-		if _, alreadyExists := storage.sessions[sessionToken]; !alreadyExists {
+		if _, alreadyExists := s.storage[sessionToken]; !alreadyExists {
 			break
 		}
 	}
 
 	// storing the session in memory
-	storage.sessions[sessionToken] = session
+	s.storage[sessionToken] = session
 
 	return sessionToken, session.ExpiresAt
 }
 
-func (storage *SessionStorage) RemoveSession(sessionToken string) {
-	delete(storage.sessions, sessionToken)
+// RemoveSession - removes session from the storage
+func (storage *SessionStorer) RemoveSession(sessionToken string) {
+	delete(storage.storage, sessionToken)
 }
 
 // IsSessionValid checks whether the session is valid,
 // it checks if it exists and is not too old
-func (storage *SessionStorage) IsSessionValid(sessionToken string) (*model.Session, bool) {
-	session, exists := storage.sessions[sessionToken]
+func (storage *SessionStorer) IsSessionValid(sessionToken string) (*api.Session, bool) {
+	session, exists := storage.storage[sessionToken]
 	if !exists {
 		return session, false
 	}
 
 	if session.IsExpired() {
+		storage.RemoveSession(sessionToken)
 		return session, false
 	}
 
