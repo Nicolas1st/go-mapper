@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"yaroslavl-parkings/data/sessionstorer"
 	"yaroslavl-parkings/data/user"
@@ -14,11 +15,13 @@ func (resource *AuthDependencies) Authenticate(w http.ResponseWriter, r *http.Re
 	// check wheter the u with this name already exists
 	u, err := resource.database.GetUserByName(username)
 	if err != nil {
+		fmt.Println("username")
 		return err
 	}
 
 	// check user password
 	if !user.IsCorrectPassword(u, password) {
+		fmt.Println("password")
 		return errors.New("could not authenticate")
 	}
 
