@@ -1,6 +1,9 @@
-package model
+package order
 
 import (
+	"yaroslavl-parkings/persistence/parking"
+	"yaroslavl-parkings/persistence/user"
+
 	"gorm.io/gorm"
 )
 
@@ -14,19 +17,19 @@ const (
 type Order struct {
 	gorm.Model
 	UserID            uint
-	User              User
+	User              user.User
 	Sum               uint
 	Status            OrderStatus
 	SlotReservationID uint
-	SlotReservation   SlotReservation
+	SlotReservation   parking.SlotReservation
 }
 
 // CreateOrder - creates order in the database
 // return id of the order
-func (db *Database) CreateOrder(
-	user User,
+func (db *OrderDB) CreateOrder(
+	user user.User,
 	sum uint,
-	slotReservation SlotReservation,
+	slotReservation parking.SlotReservation,
 ) (uint, error) {
 	order := &Order{
 		UserID:            user.ID,
@@ -36,20 +39,20 @@ func (db *Database) CreateOrder(
 		Status:            UNPAID,
 	}
 
-	result := db.db.Create(order)
+	result := db.conn.Create(order)
 	return order.ID, result.Error
 }
 
 // MarkOrderAsPaid - changes order status to paid
-func (db *Database) MarkOrderAsPaid(id uint) error {
+func (db *OrderDB) MarkOrderAsPaid(id uint) error {
 	var order Order
-	result := db.db.First(&order, id)
+	result := db.conn.First(&order, id)
 	if result.Error != nil {
 		return result.Error
 	}
 
 	order.Status = PAID
-	result = db.db.Save(&order)
+	result = db.conn.Save(&order)
 	if result.Error != nil {
 		return result.Error
 	}

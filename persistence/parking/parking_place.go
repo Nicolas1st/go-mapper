@@ -1,4 +1,4 @@
-package model
+package parking
 
 import (
 	"fmt"
@@ -35,8 +35,8 @@ type SlotReservation struct {
 	OccupiedUntil *time.Time
 }
 
-func (db Database) StoreParkingPlace(parkingPlace *ParkingPlace) (*ParkingPlace, error) {
-	result := db.db.Create(parkingPlace)
+func (db ParkingDB) StoreParkingPlace(parkingPlace *ParkingPlace) (*ParkingPlace, error) {
+	result := db.conn.Create(parkingPlace)
 	if result.Error != nil {
 		return parkingPlace, fmt.Errorf("could not store the parking place")
 	}
@@ -44,13 +44,13 @@ func (db Database) StoreParkingPlace(parkingPlace *ParkingPlace) (*ParkingPlace,
 	return parkingPlace, nil
 }
 
-func (db Database) RemoveParkingPlaceByID(id uint) {
-	db.db.Delete(&ParkingPlace{}, id)
+func (db ParkingDB) RemoveParkingPlaceByID(id uint) {
+	db.conn.Delete(&ParkingPlace{}, id)
 }
 
-func (db Database) GetAllParkingPlaces() []ParkingPlace {
+func (db ParkingDB) GetAllParkingPlaces() []ParkingPlace {
 	var parkingPlaces []ParkingPlace
-	db.db.Find(&parkingPlaces)
+	db.conn.Find(&parkingPlaces)
 
 	return parkingPlaces
 }
