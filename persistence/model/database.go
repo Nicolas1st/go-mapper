@@ -1,8 +1,6 @@
-package database
+package model
 
 import (
-	"yaroslavl-parkings/persistence/model"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -21,7 +19,7 @@ func NewDatabase(dsn string) *Database {
 }
 
 func (db *Database) InitTables() {
-	err := db.db.AutoMigrate(&model.User{}, &model.ParkingPlace{}, &model.ParkingSlot{}, &model.SlotReservation{}, &model.Purchase{})
+	err := db.db.AutoMigrate(&User{}, &ParkingPlace{}, &ParkingSlot{}, &SlotReservation{}, &Purchase{})
 	if err != nil {
 		panic("Could not initialize the tables in the database")
 	}
