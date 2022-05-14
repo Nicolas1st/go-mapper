@@ -2,17 +2,18 @@ package personal
 
 import (
 	"net/http"
-	"yaroslavl-parkings/persistence/model"
+	"yaroslavl-parkings/data/sessionstorer"
+	"yaroslavl-parkings/data/user"
 )
 
 type DatabaseInterface interface {
-	CreateNewUser(username, email, passwordHash string, age uint, role model.Role) (*model.User, error)
+	CreateNewUser(username, email, password string, age uint) (*user.User, error)
 	UpdateUserAge(id, newAge uint) error
 	UpdateUserEmail(id uint, newEmail string) error
 }
 
 type SessionsInterface interface {
-	IsSessionValid(sessionToken string) (*model.Session, bool)
+	IsSessionValid(sessionToken string) (*sessionstorer.Session, bool)
 }
 
 type personalDependencies struct {
@@ -33,8 +34,6 @@ func NewPersonalDataApi(db DatabaseInterface, sessions SessionsInterface) *perso
 	}
 
 	return &personalDataApi{
-		CreateAccount:   dependencies.CreateAccount,
-		UpdateUserEmail: dependencies.updateUserEmail,
-		UpdateUserAge:   dependencies.updateUserAge,
+		CreateAccount: dependencies.CreateAccount,
 	}
 }
