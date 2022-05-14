@@ -1,0 +1,41 @@
+{{ define "main" }}
+    <main class="sign-in-form-content">
+        <div class="pricing-container">
+            <h1> Pricings </h1>
+            <div>
+                <div class="mb-3">
+                    <p> Active Hours Discount :{{ .Data.ActiveHoursDiscount }}% </p>
+                    <div>
+                        <a href="{{ .Endpoints.ChangeActiveHoursDiscountPage }}">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <p> Slugish Hours Discount :{{ .Data.SlugishHoursDiscount }}% </p>
+                    <div>
+                        <a href="{{ .Endpoints.ChangeSluggishHoursDiscountPage }}">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <p> Adult Hourly Price :{{ .Data.AdultHourlyPrice }}% </p>
+                    <div>
+                        <a href="{{ .Endpoints.ChangeAdultBaseRatePage }}">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <p> Retiree Hourly Price:{{ .Data.RetireeHourlyRate }}% </p>
+                    <div>
+                        <a href="{{ .Endpoints.ChangeRetireeBaseRatePage }}">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{{ end }}

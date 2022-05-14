@@ -1,7 +1,7 @@
 {{ define "navbar" }}
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"> Yaroslavl Maps </a>
+            <a class="navbar-brand" href="{{ .Endpoints.Root }}"> Yaroslavl Maps </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#links">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -11,10 +11,10 @@
                 </ul>
                 <ul class="navbar-nav mb-2 mb-md-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="/signin"> Sign In </a>
+                        <a class="nav-link" href="{{ .Endpoints.LoginPage }}"> Sign In </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/signup"> Sign Up </a>
+                        <a class="nav-link" href="{{ .Endpoints.SignUpPage }}"> Sign Up </a>
                     </li>
                 </ul>
             </div>

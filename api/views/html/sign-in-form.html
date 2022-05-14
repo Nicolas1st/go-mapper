@@ -3,7 +3,7 @@
         <div>
             <h1 class="page-title"> Sign In </h1>
             
-            <form class="order-parking-form" method="POST" action="/auth/authenticate">
+            <form class="order-parking-form" method="POST" action="{{ .Endpoints.AuthenticateHandler }}">
                 <div class="mb-3">
                     <label for="username" class="form-label"> Login </label>
                     <input type="text" class="form-control" name="username" id="username" required>

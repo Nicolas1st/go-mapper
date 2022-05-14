@@ -1,0 +1,17 @@
+{{ define "main" }}
+<div class="container">
+    <div class="user-info">
+        <p> Name {{ .User.Name }} </p>
+        <p> Age {{ .User.Age }} </p>
+        <p> Email {{ .User.Email }} </p>
+        <div>
+            <a href="{{ .Endpoints.ChangePersonalData }}"> Chage Personal Data </a>
+        </div>
+    </div>
+    <div>
+        <p> Orders </p>
+        <div>
+
+        </div>
+</div>
+{{ end }}

@@ -2,10 +2,20 @@
     <main class="sign-up-form-content">
         <div>
             <h1 class="page-title"> Sign Up </h1>
-            <form action="/account/creation" method="POST" class="order-parking-form">
+            <form action="{{ .Endpoints.CreateAccountHandler }}" method="POST" class="order-parking-form">
                 <div class="mb-3">
                     <label for="username" class="form-label"> Username </label>
                     <input type="text" class="form-control" name="username" id="username" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label"> Email </label>
+                    <input type="email" class="form-control" name="email" id="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="age" class="form-label"> Age </label>
+                    <input type="number" class="form-control" name="age" id="age" required>
                 </div>
 
                 <div class="mb-3">

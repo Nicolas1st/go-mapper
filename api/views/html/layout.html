@@ -17,9 +17,9 @@
         </head>
 
         <body>
-            {{ template "navbar" }}
-            {{ template "main" }}
-            {{ template "footer" }}
+            {{ template "navbar" . }}
+            {{ template "main" . }}
+            {{ template "footer" . }}
         </body>
     </html>
 {{ end }}

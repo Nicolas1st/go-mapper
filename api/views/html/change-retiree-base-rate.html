@@ -1,0 +1,15 @@
+{{ define "main" }}
+    <main class="sign-in-form-content">
+        <div>
+            <h1> Change Retiree Hourly Rate </h1>
+            <form action="{{ .Endpoints.ChangeRetireeBaseRateHandler }}" method="post" class="order-parking-form">
+                <div class="mb-3">
+                    <label for="rate" class="form-label"> Price Per Hour </label>
+                    <input type="number" min="1" name="rate" id="rate" placeholder="In Rubbles" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
+            </form>
+        </div>
+    </main>
+{{ end }}

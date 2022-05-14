@@ -5,16 +5,20 @@
 
             <div id="map"></div>
 
-            <form class="order-parking-form">
-                <h2> Click on the location to choose </h2>
-                <input type="hidden" class="form-control" id="id" name="id" readonly>
+            <form class="order-parking-form" id="make-order-form">
+                <h1> Click on the location to choose </h1>
+
+                <input type="hidden" class="form-control" id="parking-id" name="parking-id" readonly required>
+
+                <div class="mb-3 time-field">
+                    <h2> Address </h2>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="start-day" id="address" required readonly>
+                    </div>
+                </div>
 
                 <div class="mb-3 time-field">
                     <h2> Start time </h2>
-                    <div class="mb-3">
-                        <label for="start-day" class="form-label"> Day </label>
-                        <input type="date" class="form-control" name="start-day" id="start-date" required>
-                    </div>
                     <div class="mb-3">
                         <label for="start-hour" class="form-label"> Hour </label>
                         <input type="number" min="0" max="23" class="form-control" name="start-hour" id="start-hour" required>
@@ -26,11 +30,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <h2> End time </h2>
-                    <div class="mb-3 time-field">
-                        <label for="end-day" class="form-label"> Day </label>
-                        <input type="date" class="form-control" name="end-day" id="end-date" required>
-                    </div>
+                    <h2> End Time </h2>
                     <div class="mb-3">
                         <label for="end-hour" class="form-label"> Hour </label>
                         <input type="number" min="0" max="23" class="form-control" name="end-hour" id="end-hour" required>
@@ -45,5 +45,6 @@
             </form>
         </div>
     </main>
-    <script src="/static/dist/main.js"></script>
+
+    <script src="/static/dist/order.js"></script>
 {{ end }}

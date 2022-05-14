@@ -11,10 +11,15 @@ type PrivatePages struct {
 }
 
 type AdminPages struct {
-	MakeOrder     *Page
-	AddParking    *Page
-	RemoveParking *Page
-	Profile       *Page
+	MakeOrder                   *Page
+	AddParking                  *Page
+	RemoveParking               *Page
+	Profile                     *Page
+	ChangeAdultBaseRate         *Page
+	ChangeRetireeBaseRate       *Page
+	ChangeActiveHoursDiscount   *Page
+	ChangeSluggishHoursDiscount *Page
+	SeePricing                  *Page
 }
 
 type Pages struct {
@@ -41,10 +46,15 @@ func NewPages(pathToTemplates string) *Pages {
 
 	commonAdminFiles := append(commonFiles, "admin-navbar.html")
 	admin := &AdminPages{
-		MakeOrder:     BuildPage("AdminMakeOrder", pathToTemplates, mainTemplateName, append(commonAdminFiles, "make-order-form.html")...),
-		AddParking:    BuildPage("AdminAddParking", pathToTemplates, mainTemplateName, append(commonAdminFiles, "admin/parkings/add-parking-place.html")...),
-		RemoveParking: BuildPage("AdminRemoveParking", pathToTemplates, mainTemplateName, append(commonAdminFiles, "admin/parkings/remove-parking-place.html")...),
-		Profile:       BuildPage("ProfilePage", pathToTemplates, mainTemplateName, append(commonAdminFiles, "profile.html")...),
+		MakeOrder:                   BuildPage("AdminMakeOrder", pathToTemplates, mainTemplateName, append(commonAdminFiles, "make-order-form.html")...),
+		AddParking:                  BuildPage("AdminAddParking", pathToTemplates, mainTemplateName, append(commonAdminFiles, "admin/parkings/add-parking-place.html")...),
+		RemoveParking:               BuildPage("AdminRemoveParking", pathToTemplates, mainTemplateName, append(commonAdminFiles, "admin/parkings/remove-parking-place.html")...),
+		Profile:                     BuildPage("ProfilePage", pathToTemplates, mainTemplateName, append(commonAdminFiles, "profile.html")...),
+		ChangeAdultBaseRate:         BuildPage("AdultBaseRate", pathToTemplates, mainTemplateName, append(commonAdminFiles, "change-adult-base-rate.html")...),
+		ChangeRetireeBaseRate:       BuildPage("RetireeBaseRate", pathToTemplates, mainTemplateName, append(commonAdminFiles, "change-retiree-base-rate.html")...),
+		ChangeActiveHoursDiscount:   BuildPage("ActiveHoursDiscount", pathToTemplates, mainTemplateName, append(commonAdminFiles, "change-active-hours-discount.html")...),
+		ChangeSluggishHoursDiscount: BuildPage("SluggishHoursDiscount", pathToTemplates, mainTemplateName, append(commonAdminFiles, "change-sluggish-hours-discount.html")...),
+		SeePricing:                  BuildPage("SeePricings", pathToTemplates, mainTemplateName, append(commonAdminFiles, "see-pricings.html")...),
 	}
 
 	return &Pages{

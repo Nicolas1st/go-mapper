@@ -5,44 +5,65 @@ import (
 	"net/http"
 	"yaroslavl-parkings/api"
 	"yaroslavl-parkings/api/views/pages"
-	"yaroslavl-parkings/persistence/model"
+	"yaroslavl-parkings/data/rate"
+	"yaroslavl-parkings/data/sessionstorer"
 )
 
 // dependencies
 type SessionsInterface interface {
-	IsSessionValid(sessionToken string) (*model.Session, bool)
+	IsSessionValid(sessionToken string) (*sessionstorer.Session, bool)
+}
+
+type PricingDatabaseInterface interface {
+	GetActiveHoursDiscount() (rate.PeriodDiscount, error)
+	GetSluggishHoursDiscount() (rate.PeriodDiscount, error)
+	GetAdultRatePerHour() (rate.BaseRate, error)
+	GetRetireeRatePerHour() (rate.BaseRate, error)
 }
 
 type viewsDependencies struct {
-	pages    *pages.Pages
-	sessions SessionsInterface
+	pages      *pages.Pages
+	sessions   SessionsInterface
+	princingDB PricingDatabaseInterface
 }
 
 type Views struct {
-	SignIn             http.HandlerFunc
-	SignUp             http.HandlerFunc
-	MakeOrder          http.HandlerFunc
-	AddParkingPlace    http.HandlerFunc
-	RemoveParkingPlace http.HandlerFunc
-	Profile            http.HandlerFunc
+	SignIn                      http.HandlerFunc
+	SignUp                      http.HandlerFunc
+	MakeOrder                   http.HandlerFunc
+	AddParkingPlace             http.HandlerFunc
+	RemoveParkingPlace          http.HandlerFunc
+	Profile                     http.HandlerFunc
+	SeePricing                  http.HandlerFunc
+	ChangeActiveHoursDiscount   http.HandlerFunc
+	ChangeSluggishHoursDiscount http.HandlerFunc
+	ChangeAdultBaseRate         http.HandlerFunc
+	ChangeRetireeBaseRate       http.HandlerFunc
 }
 
 func NewViews(
 	pathToTemplates string,
 	sessions SessionsInterface,
+	pricingDB PricingDatabaseInterface,
 ) *Views {
 	dependencies := &viewsDependencies{
-		pages:    pages.NewPages(pathToTemplates),
-		sessions: sessions,
+		pages:      pages.NewPages(pathToTemplates),
+		sessions:   sessions,
+		princingDB: pricingDB,
 	}
 
 	return &Views{
-		SignIn:             dependencies.SignIn,
-		SignUp:             dependencies.SignUp,
-		MakeOrder:          dependencies.MakeOrder,
-		AddParkingPlace:    dependencies.AddParkingPlace,
-		RemoveParkingPlace: dependencies.RemoveParkingPlace,
-		Profile:            dependencies.ProfilePage,
+		SignIn:                      dependencies.SignIn,
+		SignUp:                      dependencies.SignUp,
+		MakeOrder:                   dependencies.MakeOrder,
+		AddParkingPlace:             dependencies.AddParkingPlace,
+		RemoveParkingPlace:          dependencies.RemoveParkingPlace,
+		Profile:                     dependencies.ProfilePage,
+		SeePricing:                  dependencies.SeePricingPage,
+		ChangeActiveHoursDiscount:   dependencies.ChangeActiveHoursDiscountPage,
+		ChangeSluggishHoursDiscount: dependencies.ChangeSluggishHoursDiscountPage,
+		ChangeAdultBaseRate:         dependencies.ChangeAdultBaseRatePage,
+		ChangeRetireeBaseRate:       dependencies.ChangeRetireeBaseRatePage,
 	}
 }
 
@@ -52,7 +73,7 @@ func (d *viewsDependencies) SignIn(w http.ResponseWriter, r *http.Request) {
 		// redirect to the page for authenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
 	} else {
-		fmt.Println(d.pages.Public.SignIn.Execute(w))
+		fmt.Println(d.pages.Public.SignIn.Execute(w, nil))
 	}
 }
 
@@ -62,16 +83,16 @@ func (d *viewsDependencies) SignUp(w http.ResponseWriter, r *http.Request) {
 		// redirect to the page for authenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
 	} else {
-		fmt.Println(d.pages.Public.SignUp.Execute(w))
+		fmt.Println(d.pages.Public.SignUp.Execute(w, nil))
 	}
 }
 
 // MakeOrder - serves MakeOrder page
 func (d *viewsDependencies) MakeOrder(w http.ResponseWriter, r *http.Request) {
 	if api.IsAuthAndAdmin(d.sessions, r) {
-		fmt.Println(d.pages.Admin.MakeOrder.Execute(w))
+		fmt.Println(d.pages.Admin.MakeOrder.Execute(w, nil))
 	} else if api.IsAuth(d.sessions, r) {
-		fmt.Println(d.pages.Private.MakeOrder.Execute(w))
+		fmt.Println(d.pages.Private.MakeOrder.Execute(w, nil))
 	} else {
 		// redirection to the page for unauthenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
@@ -81,9 +102,9 @@ func (d *viewsDependencies) MakeOrder(w http.ResponseWriter, r *http.Request) {
 // ProfilePage - serves Profile page
 func (d *viewsDependencies) ProfilePage(w http.ResponseWriter, r *http.Request) {
 	if api.IsAuthAndAdmin(d.sessions, r) {
-		fmt.Println(d.pages.Admin.Profile.Execute(w))
+		fmt.Println(d.pages.Admin.Profile.Execute(w, nil))
 	} else if api.IsAuth(d.sessions, r) {
-		fmt.Println(d.pages.Private.Profile.Execute(w))
+		fmt.Println(d.pages.Private.Profile.Execute(w, nil))
 	} else {
 		// redirection to the page for unauthenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
@@ -93,7 +114,7 @@ func (d *viewsDependencies) ProfilePage(w http.ResponseWriter, r *http.Request) 
 // AddParkingPlace - serves AddParkingPlace page
 func (d *viewsDependencies) AddParkingPlace(w http.ResponseWriter, r *http.Request) {
 	if api.IsAuthAndAdmin(d.sessions, r) {
-		fmt.Println(d.pages.Admin.AddParking.Execute(w))
+		fmt.Println(d.pages.Admin.AddParking.Execute(w, nil))
 	} else if api.IsAuth(d.sessions, r) {
 		// redirect to the page for authenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
@@ -106,7 +127,7 @@ func (d *viewsDependencies) AddParkingPlace(w http.ResponseWriter, r *http.Reque
 // RemoveParkingPlace - serves RemoveParkingPlace page
 func (d *viewsDependencies) RemoveParkingPlace(w http.ResponseWriter, r *http.Request) {
 	if api.IsAuthAndAdmin(d.sessions, r) {
-		fmt.Println(d.pages.Admin.RemoveParking.Execute(w))
+		fmt.Println(d.pages.Admin.RemoveParking.Execute(w, nil))
 	} else if api.IsAuth(d.sessions, r) {
 		// redirect to the page for authenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
@@ -114,4 +135,75 @@ func (d *viewsDependencies) RemoveParkingPlace(w http.ResponseWriter, r *http.Re
 		// redirect to the page for unauthenticated users
 		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
 	}
+}
+
+// SeePricingPage - serves information about pricings
+func (d *viewsDependencies) SeePricingPage(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		activeHours, _ := d.princingDB.GetActiveHoursDiscount()
+		sluggishHours, _ := d.princingDB.GetSluggishHoursDiscount()
+		adultRate, _ := d.princingDB.GetAdultRatePerHour()
+		retireeRate, _ := d.princingDB.GetRetireeRatePerHour()
+
+		fmt.Println(d.pages.Admin.SeePricing.Execute(w,
+			struct {
+				ActiveHoursDiscount  uint
+				SlugishHoursDiscount uint
+				AdultHourlyPrice     uint
+				RetireeHourlyRate    uint
+			}{
+				ActiveHoursDiscount:  uint(activeHours.DiscountInPercents),
+				SlugishHoursDiscount: uint(sluggishHours.DiscountInPercents),
+				AdultHourlyPrice:     uint(adultRate.Price),
+				RetireeHourlyRate:    uint(retireeRate.Price),
+			}))
+		return
+	}
+
+	// redirect to the page for unauthenticated users
+	http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+}
+
+// ChangeAdultBaseRate - changes adult base rate
+func (d *viewsDependencies) ChangeAdultBaseRatePage(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.ChangeAdultBaseRate.Execute(w, nil))
+		return
+	}
+
+	// redirect to the page for unauthenticated users
+	http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+}
+
+// ChangeRetireeBaseRate - changes retiree base rate
+func (d *viewsDependencies) ChangeRetireeBaseRatePage(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.ChangeRetireeBaseRate.Execute(w, nil))
+		return
+	}
+
+	// redirect to the page for unauthenticated users
+	http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+}
+
+// ChangeActiveHoursDiscount - changes active hours discount
+func (d *viewsDependencies) ChangeActiveHoursDiscountPage(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.ChangeActiveHoursDiscount.Execute(w, nil))
+		return
+	}
+
+	// redirect to the page for unauthenticated users
+	http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+}
+
+// ChangeSluggishHoursDiscountPage - changes sluggish hours discount
+func (d *viewsDependencies) ChangeSluggishHoursDiscountPage(w http.ResponseWriter, r *http.Request) {
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		fmt.Println(d.pages.Admin.ChangeSluggishHoursDiscount.Execute(w, nil))
+		return
+	}
+
+	// redirect to the page for unauthenticated users
+	http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
 }

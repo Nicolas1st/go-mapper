@@ -24,10 +24,12 @@ func BuildPage(
 }
 
 // Execute - executes the page template without any data provided to it
-func (p *Page) Execute(w http.ResponseWriter) error {
+func (p *Page) Execute(w http.ResponseWriter, data any) error {
 	return p.template.Execute(w, struct {
 		Endpoints api.Endpoints
+		Data      any
 	}{
 		Endpoints: api.DefaultEndpoints,
+		Data:      data,
 	})
 }
