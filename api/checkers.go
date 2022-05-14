@@ -3,11 +3,11 @@ package api
 import (
 	"net/http"
 	"yaroslavl-parkings/api/auth"
-	"yaroslavl-parkings/persistence/model"
+	"yaroslavl-parkings/data/sessionstorer"
 )
 
 type SessionsInterface interface {
-	IsSessionValid(sessionToken string) (*model.Session, bool)
+	IsSessionValid(sessionToken string) (*sessionstorer.Session, bool)
 }
 
 // IsAuth - checks whether the user is authenticated,
@@ -41,11 +41,11 @@ func IsAuthAndAdmin(sessions SessionsInterface, r *http.Request) bool {
 // GetSessionIfValid - checks whether the user is authenticated,
 // returns user session, and its status
 // if valid - true, false otherwise
-func GetSessionIfValid(sessions SessionsInterface, r *http.Request) (*model.Session, bool) {
+func GetSessionIfValid(sessions SessionsInterface, r *http.Request) (*sessionstorer.Session, bool) {
 	cookie, noCookieErr := r.Cookie(auth.AuthCookieName)
 	if noCookieErr != nil {
 		// if there is no cookie then the user can not be an admin
-		return &model.Session{}, false
+		return &sessionstorer.Session{}, false
 	}
 
 	return sessions.IsSessionValid(cookie.Value)
