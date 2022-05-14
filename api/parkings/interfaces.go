@@ -1,9 +1,9 @@
 package parkings
 
-import "yaroslavl-parkings/persistence/model"
+import "yaroslavl-parkings/data/parking"
 
 type DatabaseInterface interface {
-	StoreParkingPlace(parkingPlace *model.ParkingPlace) (*model.ParkingPlace, error)
+	StoreParkingPlace(parkingPlace *parking.ParkingPlace) (*parking.ParkingPlace, error)
 	RemoveParkingPlaceByID(id uint)
-	GetAllParkingPlaces() []model.ParkingPlace
+	GetAllParkingPlaces() []parking.ParkingPlace
 }

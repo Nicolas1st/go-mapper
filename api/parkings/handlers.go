@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"yaroslavl-parkings/persistence/model"
+	"yaroslavl-parkings/data/parking"
 )
 
 type parkingsDependencies struct {
@@ -13,7 +13,7 @@ type parkingsDependencies struct {
 
 func (resource *parkingsDependencies) createParkingPlace(w http.ResponseWriter, r *http.Request) {
 	// the parsed values are going to be stored here
-	var parkingPlace model.ParkingPlace
+	var parkingPlace parking.ParkingPlace
 
 	// parsing the body of json request
 	err := json.NewDecoder(r.Body).Decode(&parkingPlace)
