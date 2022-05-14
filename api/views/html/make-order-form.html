@@ -5,7 +5,7 @@
 
             <div id="map"></div>
 
-            <form class="order-parking-form" id="make-order-form">
+            <form class="order-parking-form" id="make-order-form" action="{{ .Endpoints.CreateOrderHandler }}" method="post">
                 <h1> Click on the location to choose </h1>
 
                 <input type="hidden" class="form-control" id="parking-id" name="parking-id" readonly required>
@@ -13,7 +13,7 @@
                 <div class="mb-3 time-field">
                     <h2> Address </h2>
                     <div class="mb-3">
-                        <input type="text" class="form-control" name="start-day" id="address" required readonly>
+                        <input type="text" class="form-control" name="address" id="address" required readonly>
                     </div>
                 </div>
 
@@ -28,7 +28,6 @@
                         <input type="number" min="0" max="59" class="form-control" name="start-minute" id="start-minute" required>
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <h2> End Time </h2>
                     <div class="mb-3">
@@ -41,7 +40,8 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;"> Order </button>
+                <input type="submit" class="btn btn-primary" style="width: 100%;" value="Order">
+                <!-- <button type="submit" > Order </button> -->
             </form>
         </div>
     </main>

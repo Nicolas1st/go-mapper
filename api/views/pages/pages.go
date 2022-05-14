@@ -6,8 +6,10 @@ type PublicPages struct {
 }
 
 type PrivatePages struct {
-	MakeOrder *Page
-	Profile   *Page
+	MakeOrder   *Page
+	Profile     *Page
+	PaymentPage *Page
+	Orders      *Page
 }
 
 type AdminPages struct {
@@ -20,6 +22,8 @@ type AdminPages struct {
 	ChangeActiveHoursDiscount   *Page
 	ChangeSluggishHoursDiscount *Page
 	SeePricing                  *Page
+	PaymentPage                 *Page
+	Orders                      *Page
 }
 
 type Pages struct {
@@ -40,8 +44,10 @@ func NewPages(pathToTemplates string) *Pages {
 
 	commonPrivateFiles := append(commonFiles, "signed-in-navbar.html")
 	private := &PrivatePages{
-		MakeOrder: BuildPage("PrivateMakeOrder", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "make-order-form.html")...),
-		Profile:   BuildPage("ProfilePage", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "profile.html")...),
+		MakeOrder:   BuildPage("PrivateMakeOrder", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "make-order-form.html")...),
+		Profile:     BuildPage("ProfilePage", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "profile.html")...),
+		PaymentPage: BuildPage("PaymentPage", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "payment.html")...),
+		Orders:      BuildPage("PaymentPage", pathToTemplates, mainTemplateName, append(commonPrivateFiles, "orders.html")...),
 	}
 
 	commonAdminFiles := append(commonFiles, "admin-navbar.html")
@@ -55,6 +61,8 @@ func NewPages(pathToTemplates string) *Pages {
 		ChangeActiveHoursDiscount:   BuildPage("ActiveHoursDiscount", pathToTemplates, mainTemplateName, append(commonAdminFiles, "change-active-hours-discount.html")...),
 		ChangeSluggishHoursDiscount: BuildPage("SluggishHoursDiscount", pathToTemplates, mainTemplateName, append(commonAdminFiles, "change-sluggish-hours-discount.html")...),
 		SeePricing:                  BuildPage("SeePricings", pathToTemplates, mainTemplateName, append(commonAdminFiles, "see-pricings.html")...),
+		PaymentPage:                 BuildPage("PaymentPage", pathToTemplates, mainTemplateName, append(commonAdminFiles, "payment.html")...),
+		Orders:                      BuildPage("PaymentPage", pathToTemplates, mainTemplateName, append(commonAdminFiles, "orders.html")...),
 	}
 
 	return &Pages{

@@ -4,7 +4,7 @@
             <h1> Pricings </h1>
             <div>
                 <div class="mb-3">
-                    <p> Active Hours Discount :{{ .Data.ActiveHoursDiscount }}% </p>
+                    <p> <strong> Active Hours Discount :</strong>{{ .Data.ActiveHoursDiscount }}% </p>
                     <div>
                         <a href="{{ .Endpoints.ChangeActiveHoursDiscountPage }}">
                             <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <p> Slugish Hours Discount :{{ .Data.SlugishHoursDiscount }}% </p>
+                    <p> <strong>Slugish Hours Discount :</strong>{{ .Data.SlugishHoursDiscount }}% </p>
                     <div>
                         <a href="{{ .Endpoints.ChangeSluggishHoursDiscountPage }}">
                             <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <p> Adult Hourly Price :{{ .Data.AdultHourlyPrice }}% </p>
+                    <p> <strong>Adult Hourly Price :</strong> {{ .Data.AdultHourlyPrice }} RUB </p>
                     <div>
                         <a href="{{ .Endpoints.ChangeAdultBaseRatePage }}">
                             <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <p> Retiree Hourly Price:{{ .Data.RetireeHourlyRate }}% </p>
+                    <p> <strong>Retiree Hourly Price:</strong> {{ .Data.RetireeHourlyRate }} RUB </p>
                     <div>
                         <a href="{{ .Endpoints.ChangeRetireeBaseRatePage }}">
                             <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>

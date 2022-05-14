@@ -5,7 +5,7 @@
             <form action="{{ .Endpoints.ChangeActiveHoursDiscountHandler }}" method="post" class="order-parking-form">
                 <div class="mb-3">
                     <label for="discount" class="form-label"> Discount in % </label>
-                    <input type="number" min="1" max="99" name="discount" id="discount" placeholder="In Percents" class="form-control" required>
+                    <input type="number" min="0" max="99" name="discount" id="discount" placeholder="In Percents" class="form-control" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>

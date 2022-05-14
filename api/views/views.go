@@ -3,10 +3,13 @@ package views
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"yaroslavl-parkings/api"
 	"yaroslavl-parkings/api/views/pages"
+	"yaroslavl-parkings/data/order"
 	"yaroslavl-parkings/data/rate"
 	"yaroslavl-parkings/data/sessionstorer"
+	"yaroslavl-parkings/pkg/qiwi"
 )
 
 // dependencies
@@ -21,10 +24,18 @@ type PricingDatabaseInterface interface {
 	GetRetireeRatePerHour() (rate.BaseRate, error)
 }
 
+type OrderDatabaseInterface interface {
+	GetOrderByID(id uint) (*order.Order, error)
+	GetAllOrders() []order.Order
+	GetAllOrdersByUserID(uid uint) []order.Order
+}
+
 type viewsDependencies struct {
 	pages      *pages.Pages
 	sessions   SessionsInterface
 	princingDB PricingDatabaseInterface
+	ordersDB   OrderDatabaseInterface
+	paymenter  *qiwi.Paymenter
 }
 
 type Views struct {
@@ -39,17 +50,23 @@ type Views struct {
 	ChangeSluggishHoursDiscount http.HandlerFunc
 	ChangeAdultBaseRate         http.HandlerFunc
 	ChangeRetireeBaseRate       http.HandlerFunc
+	PaymentPage                 http.HandlerFunc
+	OrdersPage                  http.HandlerFunc
 }
 
 func NewViews(
 	pathToTemplates string,
 	sessions SessionsInterface,
 	pricingDB PricingDatabaseInterface,
+	orderDB OrderDatabaseInterface,
+	paymenter *qiwi.Paymenter,
 ) *Views {
 	dependencies := &viewsDependencies{
 		pages:      pages.NewPages(pathToTemplates),
 		sessions:   sessions,
 		princingDB: pricingDB,
+		ordersDB:   orderDB,
+		paymenter:  paymenter,
 	}
 
 	return &Views{
@@ -64,6 +81,8 @@ func NewViews(
 		ChangeSluggishHoursDiscount: dependencies.ChangeSluggishHoursDiscountPage,
 		ChangeAdultBaseRate:         dependencies.ChangeAdultBaseRatePage,
 		ChangeRetireeBaseRate:       dependencies.ChangeRetireeBaseRatePage,
+		PaymentPage:                 dependencies.PaymentPage,
+		OrdersPage:                  dependencies.OrdersPage,
 	}
 }
 
@@ -206,4 +225,75 @@ func (d *viewsDependencies) ChangeSluggishHoursDiscountPage(w http.ResponseWrite
 
 	// redirect to the page for unauthenticated users
 	http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+}
+
+func (d *viewsDependencies) PaymentPage(w http.ResponseWriter, r *http.Request) {
+	if !api.IsAuth(d.sessions, r) {
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+		return
+	}
+
+	orderID := r.URL.Query().Get("orderID")
+	if orderID == "" {
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+		return
+	}
+
+	orderIDInt, err := strconv.Atoi(orderID)
+	if err != nil {
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+		return
+	}
+
+	order, err := d.ordersDB.GetOrderByID(uint(orderIDInt))
+	if err != nil {
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+		return
+	}
+
+	data := struct {
+		Link string
+		Bill uint
+	}{
+		Link: order.PaymentURL,
+		Bill: order.Sum,
+	}
+
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		d.pages.Admin.PaymentPage.Execute(w, data)
+	} else if api.IsAuth(d.sessions, r) {
+		d.pages.Private.PaymentPage.Execute(w, data)
+		fmt.Println(d.pages.Private.MakeOrder.Execute(w, nil))
+	} else {
+		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+	}
+
+}
+
+func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
+	session, valid := api.GetSessionIfValid(d.sessions, r)
+	if !valid {
+		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
+		return
+	}
+
+	var data struct {
+		Orders []order.Order
+	}
+
+	if api.IsAuthAndAdmin(d.sessions, r) {
+		data.Orders = d.ordersDB.GetAllOrders()
+		for _, o := range data.Orders {
+			status, err := d.paymenter.GetBillStatus(o.StringID)
+			if err == nil {
+				o.Status = order.OrderStatus(status)
+			}
+		}
+		d.pages.Admin.Orders.Execute(w, data)
+	} else if api.IsAuth(d.sessions, r) {
+		data.Orders = d.ordersDB.GetAllOrdersByUserID(session.UserID)
+		d.pages.Private.Orders.Execute(w, data)
+	} else {
+		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)
+	}
 }
