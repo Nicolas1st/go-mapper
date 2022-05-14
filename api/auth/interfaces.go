@@ -2,16 +2,16 @@ package auth
 
 import (
 	"time"
-	"yaroslavl-parkings/persistence/model"
+	"yaroslavl-parkings/data/sessionstorer"
+	"yaroslavl-parkings/data/user"
 )
 
 type SessionStorageInterface interface {
-	StoreSession(session *model.Session) (string, time.Time)
+	StoreSession(session *sessionstorer.Session) (string, time.Time)
 	RemoveSession(sessionToken string)
-	IsSessionValid(sessionToken string) (*model.Session, bool)
+	IsSessionValid(sessionToken string) (*sessionstorer.Session, bool)
 }
 
 type DatabaseInterface interface {
-	GetUserByName(username string) (*model.User, error)
-	CreateNewUser(username, passwordHash string, role model.Role) (*model.User, error)
+	GetUserByName(username string) (*user.User, error)
 }
