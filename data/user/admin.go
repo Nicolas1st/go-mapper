@@ -10,7 +10,7 @@ func (db *UserDB) SetUpAdminAccount(
 	password string,
 	age uint,
 ) error {
-	passwordHash, err := hashPassword(password)
+	passwordHash, err := HashPassword(password)
 	if err != nil {
 		return err
 	}

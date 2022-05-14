@@ -4,7 +4,6 @@ import (
 	"yaroslavl-parkings/data/user"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 // Base price
@@ -25,7 +24,7 @@ func (db *RateDB) SetUpAgeCategoryBasedHourlyRates(forAdults, forRetirees uint) 
 		AgeCategory: user.Adult,
 		Price:       PricePerHour(forAdults),
 	}
-	if err := db.conn.Clauses(clause.OnConflict{DoNothing: true}).Create(&adultsRate).Error; err != nil {
+	if err := db.conn.Create(&adultsRate).Error; err != nil {
 		return err
 	}
 
@@ -33,9 +32,47 @@ func (db *RateDB) SetUpAgeCategoryBasedHourlyRates(forAdults, forRetirees uint) 
 		AgeCategory: user.Retiree,
 		Price:       PricePerHour(forRetirees),
 	}
-	if err := db.conn.Clauses(clause.OnConflict{DoNothing: true}).Create(&retireesRate).Error; err != nil {
+	if err := db.conn.Create(&retireesRate).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (db *RateDB) GetAdultRatePerHour() (BaseRate, error) {
+	var rate BaseRate
+	// database ids start with one
+	result := db.conn.First(&rate, user.Adult+1)
+
+	return rate, result.Error
+}
+
+func (db *RateDB) GetRetireeRatePerHour() (BaseRate, error) {
+	var rate BaseRate
+	// database ids start with one
+	result := db.conn.First(&rate, user.Retiree+1)
+
+	return rate, result.Error
+}
+
+func (db *RateDB) UpdateAdultPricePerHour(pricePerHour uint) error {
+	rate, err := db.GetAdultRatePerHour()
+	if err != nil {
+		return err
+	}
+
+	result := db.conn.Model(&rate).Updates(BaseRate{Price: PricePerHour(pricePerHour)})
+
+	return result.Error
+}
+
+func (db *RateDB) UpdateRetireePricePerHour(pricePerHour uint) error {
+	rate, err := db.GetRetireeRatePerHour()
+	if err != nil {
+		return err
+	}
+
+	result := db.conn.Model(&rate).Updates(BaseRate{Price: PricePerHour(pricePerHour)})
+
+	return result.Error
 }

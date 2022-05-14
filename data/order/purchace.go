@@ -2,8 +2,8 @@ package order
 
 import (
 	"fmt"
-	"yaroslavl-parkings/persistence/parking"
-	"yaroslavl-parkings/persistence/user"
+	"yaroslavl-parkings/data/parking"
+	"yaroslavl-parkings/data/user"
 
 	"gorm.io/gorm"
 )

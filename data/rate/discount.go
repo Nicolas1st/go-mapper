@@ -2,7 +2,6 @@ package rate
 
 import (
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 // Rate categories dependent on the time of the day
@@ -20,8 +19,8 @@ type Discount uint
 // based on the time of the day
 type PeriodDiscount struct {
 	gorm.Model
-	PeriodCategory    PeriodCategory `gorm:"unique"`
-	DisountInPercents Discount
+	PeriodCategory     PeriodCategory `gorm:"unique"`
+	DiscountInPercents Discount
 }
 
 func (db *RateDB) SetUpDiscount(activeHoursDiscount, sluggishHoursDiscount uint) error {
@@ -30,20 +29,58 @@ func (db *RateDB) SetUpDiscount(activeHoursDiscount, sluggishHoursDiscount uint)
 	}
 
 	activeHours := PeriodDiscount{
-		PeriodCategory:    ActiveHours,
-		DisountInPercents: Discount(activeHoursDiscount),
+		PeriodCategory:     ActiveHours,
+		DiscountInPercents: Discount(activeHoursDiscount),
 	}
-	if err := db.conn.Clauses(clause.OnConflict{DoNothing: true}).Create(&activeHours).Error; err != nil {
+	if err := db.conn.Create(&activeHours).Error; err != nil {
 		return err
 	}
 
 	sluggishHours := PeriodDiscount{
-		PeriodCategory:    SlugishHours,
-		DisountInPercents: Discount(sluggishHoursDiscount),
+		PeriodCategory:     SlugishHours,
+		DiscountInPercents: Discount(sluggishHoursDiscount),
 	}
-	if err := db.conn.Clauses(clause.OnConflict{DoNothing: true}).Create(&sluggishHours).Error; err != nil {
+	if err := db.conn.Create(&sluggishHours).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (db *RateDB) GetActiveHoursDiscount() (PeriodDiscount, error) {
+	var discount PeriodDiscount
+	// database ids start with one
+	result := db.conn.First(&discount, ActiveHours+1)
+
+	return discount, result.Error
+}
+
+func (db *RateDB) GetSluggishHoursDiscount() (PeriodDiscount, error) {
+	var discount PeriodDiscount
+	// database ids start with one
+	result := db.conn.First(&discount, SlugishHours+1)
+
+	return discount, result.Error
+}
+
+func (db *RateDB) UpdateActiveHoursDiscount(discountInPercents uint) error {
+	discount, err := db.GetActiveHoursDiscount()
+	if err != nil {
+		return err
+	}
+
+	result := db.conn.Model(&discount).Updates(PeriodDiscount{DiscountInPercents: Discount(discountInPercents)})
+
+	return result.Error
+}
+
+func (db *RateDB) UpdateSluggishHoursDiscount(discountInPercents uint) error {
+	discount, err := db.GetSluggishHoursDiscount()
+	if err != nil {
+		return err
+	}
+
+	result := db.conn.Model(&discount).Updates(PeriodDiscount{DiscountInPercents: Discount(discountInPercents)})
+
+	return result.Error
 }

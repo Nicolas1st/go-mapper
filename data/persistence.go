@@ -1,9 +1,10 @@
-package persistence
+package data
 
 import (
-	"yaroslavl-parkings/persistence/order"
-	"yaroslavl-parkings/persistence/parking"
-	"yaroslavl-parkings/persistence/user"
+	"yaroslavl-parkings/data/order"
+	"yaroslavl-parkings/data/parking"
+	"yaroslavl-parkings/data/rate"
+	"yaroslavl-parkings/data/user"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,6 +18,7 @@ type Database struct {
 	User    *user.UserDB
 	Parking *parking.ParkingDB
 	Order   *order.OrderDB
+	Rate    *rate.RateDB
 }
 
 // NewDatabase - sets up a new database connection,
@@ -34,6 +36,7 @@ func NewDatabase(dsn string) *Database {
 		User:    user.NewUserDB(conn),
 		Parking: parking.NewParkingDB(conn),
 		Order:   order.NewOrderDB(conn),
+		Rate:    rate.NewRateDB(conn),
 	}
 }
 
@@ -42,7 +45,16 @@ func NewDatabase(dsn string) *Database {
 // on the database to which
 // connection has be established
 func (db *Database) InitTables() {
-	err := db.Conn.AutoMigrate(&user.User{}, &parking.ParkingPlace{}, &parking.ParkingSlot{}, &parking.SlotReservation{}, &order.Purchase{})
+	err := db.Conn.AutoMigrate(
+		&user.User{},
+		&parking.ParkingPlace{},
+		&parking.ParkingSlot{},
+		&parking.SlotReservation{},
+		&order.Purchase{},
+		&rate.BaseRate{},
+		&rate.PeriodDiscount{},
+	)
+
 	if err != nil {
 		panic("Could not initialize the tables in the database")
 	}

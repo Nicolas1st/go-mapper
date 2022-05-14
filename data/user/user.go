@@ -45,7 +45,7 @@ func (wrapper *UserDB) GetAllUsers() ([]User, error) {
 	return users, wrapper.conn.Find(&users).Error
 }
 func (db *UserDB) CreateNewUser(username, email, password string, age uint) (*User, error) {
-	passwordHash, err := hashPassword(password)
+	passwordHash, err := HashPassword(password)
 	if err != nil {
 		return &User{}, err
 	}

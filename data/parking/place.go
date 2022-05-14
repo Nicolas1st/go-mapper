@@ -15,26 +15,8 @@ type ParkingPlace struct {
 	Longitude     float64
 }
 
-type ParkingSlot struct {
-	gorm.Model
-	Number         int
-	ParkingPlaceID int
-	ParkingPlace   ParkingPlace
-}
-
-type SlotReservation struct {
-	gorm.Model
-
-	ParkingPlaceID int
-	ParkingPlace   ParkingPlace
-
-	ParkingSlotID int
-	ParkingSlot   ParkingSlot
-
-	OccupiedFrom  *time.Time
-	OccupiedUntil *time.Time
-}
-
+// StoreParkingPlace - stores parking place in the database
+// returns the parking place and the error result
 func (db ParkingDB) StoreParkingPlace(parkingPlace *ParkingPlace) (*ParkingPlace, error) {
 	result := db.conn.Create(parkingPlace)
 	if result.Error != nil {
@@ -44,13 +26,19 @@ func (db ParkingDB) StoreParkingPlace(parkingPlace *ParkingPlace) (*ParkingPlace
 	return parkingPlace, nil
 }
 
+// RemoveParkingPlaceByID - removes parking place from the databaes
 func (db ParkingDB) RemoveParkingPlaceByID(id uint) {
 	db.conn.Delete(&ParkingPlace{}, id)
 }
 
+// GetAllParkingPlaces - returns all parking places
 func (db ParkingDB) GetAllParkingPlaces() []ParkingPlace {
 	var parkingPlaces []ParkingPlace
 	db.conn.Find(&parkingPlaces)
 
 	return parkingPlaces
+}
+
+func (db ParkingDB) ReservePlace(parkingID uint, startTime time.Time, duration time.Duration) SlotReservation {
+	return SlotReservation{}
 }
