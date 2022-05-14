@@ -1,6 +1,8 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type UserDB struct {
 	conn *gorm.DB
@@ -42,13 +44,18 @@ func (wrapper *UserDB) GetAllUsers() ([]User, error) {
 	users := []User{}
 	return users, wrapper.conn.Find(&users).Error
 }
-func (db *UserDB) CreateNewUser(username, email, passwordHash string, age uint, role Role) (*User, error) {
+func (db *UserDB) CreateNewUser(username, email, password string, age uint) (*User, error) {
+	passwordHash, err := hashPassword(password)
+	if err != nil {
+		return &User{}, err
+	}
+
 	user := &User{
 		Username:     username,
 		Email:        email,
 		Age:          age,
-		PasswordHash: passwordHash,
-		Role:         role,
+		PasswordHash: string(passwordHash),
+		Role:         Customer,
 	}
 
 	return user, db.conn.Create(user).Error
