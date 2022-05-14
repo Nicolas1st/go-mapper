@@ -8,8 +8,6 @@ import (
 
 type DatabaseInterface interface {
 	CreateNewUser(username, email, password string, age uint) (*user.User, error)
-	UpdateUserAge(id, newAge uint) error
-	UpdateUserEmail(id uint, newEmail string) error
 }
 
 type SessionsInterface interface {
