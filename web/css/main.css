@@ -25,10 +25,10 @@ body {
 }
 
 #map {
-    min-height: 800px;
-    min-width: 800px;
-    max-height: 900px;
-    max-width: 900px;
+    min-height: 700px;
+    min-width: 700px;
+    max-height: 800px;
+    max-width: 800px;
     top: 0;
     bottom: 0;
 }
@@ -96,10 +96,10 @@ body {
 
 @media screen and (max-width: 1000px){
     #map {
-        min-height: 600px;
-        min-width: 600px;
-        max-height: 700px;
-        max-width: 700px;
+        min-height: 580px;
+        min-width: 580px;
+        max-height: 650px;
+        max-width: 650px;
     }
 }
 
@@ -119,4 +119,15 @@ body {
         max-height: 320px;
         max-width: 320px;
     }
+}
+
+.pricing-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 370px;
+}
+
+.col {
+    flex-direction: column;
 }

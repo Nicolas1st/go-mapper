@@ -1,5 +1,5 @@
 import {centerCoords} from "./center.js";
-import {createAndAttachMap, displayMarker} from "./map.js";
+import {createAndAttachMap, createMarker} from "./map.js";
 
 // init map
 let map = createAndAttachMap(centerCoords.longitude, centerCoords.latitude);
@@ -10,7 +10,7 @@ fetchPromise.then(response => {
     return response.json();
 }).then(parkings => {
     for (let p of parkings) {
-        const marker = displayMarker(p);
+        const marker = createMarker(p);
         marker.addTo(map);
     }
 })
@@ -33,12 +33,12 @@ map.on("click", function (e) {
     } catch {
     }
 
-    marker = displayMarker({Latitude: e.lngLat.lat, Longitude: e.lngLat.lng, NumberOfSlots: numberOfSlotsFields.value});
+    marker = createMarker({Latitude: e.lngLat.lat, Longitude: e.lngLat.lng, NumberOfSlots: numberOfSlotsFields.value});
     marker.addTo(map);
 });
 
 // submit event
-const form = document.querySelector(".add-parking-place");
+const form = document.querySelector("#add-parking-place");
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     fetch(`/parkings/`, {
@@ -63,6 +63,6 @@ form.addEventListener("submit", async (e) => {
         return result.json();
     })
     .then(parking => {
-        displayMarker(parking).addTo(map);
+        createMarker(parking).addTo(map);
     });
 });

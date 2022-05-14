@@ -1,5 +1,5 @@
 import {centerCoords} from "./center.js";
-import {createAndAttachMap, displayMarker} from "./map.js";
+import {createAndAttachMap, createMarker} from "./map.js";
 
 let map = createAndAttachMap(centerCoords.longitude, centerCoords.latitude);
 
@@ -11,13 +11,25 @@ fetchPromise.then(response => {
     return response.json();
 }).then(parkings => {
     for (let p of parkings) {
-        const marker = displayMarker(p, true, "This parking place will be removed", p.ID, idInput);
+        const marker = createMarker(
+            p,
+            true,
+            "This parking place will be removed",
+            () => {
+                idInput.value = p.ID;
+            },
+            () => {
+                idInput.value = "";
+            },
+        );
+
         marker.addTo(map);
         markers[p.ID] = marker;
     }
 })
 
-const form = document.querySelector(".remove-parking-place-form");
+// handle form submission
+const form = document.querySelector("#remove-parking-place-form");
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     fetch(`/parkings/`, {
@@ -29,13 +41,14 @@ form.addEventListener("submit", async (e) => {
             ID: Number(idInput.value),
         }),
     })
-    .catch(() => alert("failed to add the parking"))
+    .catch(() => alert("failed to remove the parking"))
     .then((result) => {
         return result.json();
     })
     .then(parking => {
-        idInput.value = "";
-        markers[parking.ID].remove();
-        delete markers[parking.ID]
+        try {
+            markers[parking.ID].remove();
+            delete markers[parking.ID]
+        } catch {}
     });
 });

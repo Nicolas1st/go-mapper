@@ -10,12 +10,12 @@ export function createAndAttachMap(longitude, latitude) {
     return map;
 }
 
-export function displayMarker(
+export function createMarker(
     parking,
     addPopup,
     popupMessage,
-    valueToWrite,
-    writeToElement,
+    callbackOnOpen,
+    callbackOnClose,
 ) {
     // create DOM element for the marker
     let el = document.createElement("div");
@@ -33,8 +33,11 @@ export function displayMarker(
     if (addPopup) {
         var popup = new maplibregl.Popup({ offset: 25 }).setText(popupMessage);
         popup.on("open", () => {
-            writeToElement.value = "";
-            writeToElement.value = valueToWrite;
+            callbackOnOpen();
+        });
+
+        popup.on("close", () => {
+            callbackOnClose();
         });
 
         marker.setPopup(popup)
