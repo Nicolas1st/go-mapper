@@ -2,4 +2,6 @@ package middlewares
 
 import "net/http"
 
-type Middleware func(http.HandlerFunc) http.HandlerFunc
+type ApiMiddleware func(ApiHandler) http.HandlerFunc
+
+type ApiHandler func(w http.ResponseWriter, r *http.Request) error
