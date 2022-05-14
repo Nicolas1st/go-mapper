@@ -2,7 +2,6 @@ package sessionstorer
 
 import (
 	"time"
-	"yaroslavl-parkings/api"
 
 	"github.com/google/uuid"
 )
@@ -10,7 +9,7 @@ import (
 // SessionStorer - used a storage for user user sessions
 // session are automatically removed once they become expired
 type SessionStorer struct {
-	storage                 map[string]*api.Session
+	storage                 map[string]*Session
 	clearFromExpiredOncePer time.Duration
 	lastPurgedAt            time.Time
 }
@@ -18,7 +17,7 @@ type SessionStorer struct {
 // NewSessionStorer - creates new session storer
 func NewSessionStorer(clearFromExpiredOncePer time.Duration) *SessionStorer {
 	return &SessionStorer{
-		storage:                 make(map[string]*api.Session),
+		storage:                 make(map[string]*Session),
 		clearFromExpiredOncePer: clearFromExpiredOncePer,
 		lastPurgedAt:            time.Now(),
 	}
@@ -37,7 +36,7 @@ func (s *SessionStorer) purgeFromExpiredSessions() {
 
 // StoreSession - stores session in memory,
 // returns session token as string, and the expiration time
-func (s *SessionStorer) StoreSession(session *api.Session) (string, time.Time) {
+func (s *SessionStorer) StoreSession(session *Session) (string, time.Time) {
 	// to avoid memory leaks the session are being purged
 	// It's done every expiry perdiod of one cookies elapses
 	// the persiod is defined in session.go
@@ -74,7 +73,7 @@ func (storage *SessionStorer) RemoveSession(sessionToken string) {
 
 // IsSessionValid checks whether the session is valid,
 // it checks if it exists and is not too old
-func (storage *SessionStorer) IsSessionValid(sessionToken string) (*api.Session, bool) {
+func (storage *SessionStorer) IsSessionValid(sessionToken string) (*Session, bool) {
 	session, exists := storage.storage[sessionToken]
 	if !exists {
 		return session, false
