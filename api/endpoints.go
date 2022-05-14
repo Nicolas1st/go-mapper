@@ -8,6 +8,7 @@ type Endpoints struct {
 	ProfilePage       string
 	AddParkingPage    string
 	RemoveParkingPage string
+	OrdersPage        string
 
 	AuthenticateHandler  string
 	LogoutHandler        string
@@ -25,6 +26,7 @@ type Endpoints struct {
 	ChangeSluggishHoursDiscountHandler string
 
 	CreateOrderHandler string
+	PaymentPage        string
 }
 
 var DefaultEndpoints = Endpoints{
@@ -36,6 +38,7 @@ var DefaultEndpoints = Endpoints{
 	ProfilePage:       "/profile",
 	AddParkingPage:    "/parkings/creation",
 	RemoveParkingPage: "/parkings/removal",
+	OrdersPage:        "/orders",
 
 	// authentiation handlers
 	AuthenticateHandler:  "/auth/authenticate",
@@ -57,4 +60,5 @@ var DefaultEndpoints = Endpoints{
 
 	// apis
 	CreateOrderHandler: "/orders/creation",
+	PaymentPage:        "/payments",
 }
