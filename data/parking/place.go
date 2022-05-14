@@ -39,6 +39,6 @@ func (db ParkingDB) GetAllParkingPlaces() []ParkingPlace {
 	return parkingPlaces
 }
 
-func (db ParkingDB) ReservePlace(parkingID uint, startTime time.Time, duration time.Duration) SlotReservation {
+func (db ParkingDB) ReservePlace(parkingID uint, startTime time.Time, duration uint) SlotReservation {
 	return SlotReservation{}
 }

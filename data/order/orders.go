@@ -1,7 +1,7 @@
 package order
 
 import (
-	"yaroslavl-parkings/data/parking"
+	"errors"
 	"yaroslavl-parkings/data/user"
 
 	"gorm.io/gorm"
@@ -16,12 +16,12 @@ const (
 
 type Order struct {
 	gorm.Model
-	UserID            uint
-	User              user.User
-	Sum               uint
-	Status            OrderStatus
-	SlotReservationID uint
-	SlotReservation   parking.SlotReservation
+	StringID   string
+	UserID     uint
+	User       user.User
+	Sum        uint
+	Status     OrderStatus
+	PaymentURL string
 }
 
 // CreateOrder - creates order in the database
@@ -29,14 +29,16 @@ type Order struct {
 func (db *OrderDB) CreateOrder(
 	user user.User,
 	sum uint,
-	slotReservation parking.SlotReservation,
+	paymentURL,
+	stringID string,
 ) (uint, error) {
 	order := &Order{
-		UserID:            user.ID,
-		User:              user,
-		Sum:               sum,
-		SlotReservationID: slotReservation.ID,
-		Status:            UNPAID,
+		UserID:     user.ID,
+		User:       user,
+		Sum:        sum,
+		Status:     UNPAID,
+		PaymentURL: paymentURL,
+		StringID:   stringID,
 	}
 
 	result := db.conn.Create(order)
@@ -58,4 +60,38 @@ func (db *OrderDB) MarkOrderAsPaid(id uint) error {
 	}
 
 	return nil
+}
+
+func (db *OrderDB) GetOrderPaymentURLByID(id uint) string {
+	var order Order
+	result := db.conn.First(&order, id)
+	if result.Error != nil {
+		return ""
+	}
+
+	return order.PaymentURL
+}
+
+func (db *OrderDB) GetOrderByID(id uint) (*Order, error) {
+	var order Order
+	result := db.conn.First(&order, id)
+	if result.Error != nil {
+		return &Order{}, errors.New("not found")
+	}
+
+	return &order, nil
+}
+
+func (db *OrderDB) GetAllOrders() []Order {
+	var orders []Order
+	db.conn.Find(&orders)
+
+	return orders
+}
+
+func (db *OrderDB) GetAllOrdersByUserID(uid uint) []Order {
+	var orders []Order
+	db.conn.Where(&Order{UserID: uid}).Find(&orders)
+
+	return orders
 }

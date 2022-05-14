@@ -50,7 +50,7 @@ func (db *Database) InitTables() {
 		&parking.ParkingPlace{},
 		&parking.ParkingSlot{},
 		&parking.SlotReservation{},
-		&order.Purchase{},
+		&order.Order{},
 		&rate.BaseRate{},
 		&rate.PeriodDiscount{},
 	)

@@ -61,24 +61,6 @@ func (db *UserDB) CreateNewUser(username, email, password string, age uint) (*Us
 	return user, db.conn.Create(user).Error
 }
 
-func (db *UserDB) UpdateUserAge(id, newAge uint) error {
-	user, err := db.GetUserByID(id)
-	if err != nil {
-		return err
-	}
-
-	return db.conn.Model(&user).Updates(User{Age: newAge}).Error
-}
-
-func (db *UserDB) UpdateUserEmail(id uint, newEmail string) error {
-	user, err := db.GetUserByID(id)
-	if err != nil {
-		return err
-	}
-
-	return db.conn.Model(&user).Updates(User{Email: newEmail}).Error
-}
-
 func (db *UserDB) RemoveUserByID(id uint) error {
 	return db.conn.Delete(User{}, id).Error
 }
