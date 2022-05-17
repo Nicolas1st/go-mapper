@@ -10,6 +10,7 @@ type parkingsDependencies struct {
 	datatbase DatabaseInterface
 }
 
+// createParkingPlace - creates a parking place, to be later diplayed on the map
 func (resource *parkingsDependencies) createParkingPlace(w http.ResponseWriter, r *http.Request) {
 	// the parsed values are going to be stored here
 	var parkingPlace parking.ParkingPlace
