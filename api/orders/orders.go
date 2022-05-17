@@ -26,10 +26,6 @@ type SessionsInterface interface {
 	IsSessionValid(sessionToken string) (*sessionstorer.Session, bool)
 }
 
-type BillerInterface interface {
-	ComputePrice(basePrice uint, discount uint, forHowManyMinutes uint) uint
-}
-
 type ParkerInterface interface {
 	ReservePlace(parkingID uint, startTime time.Time, forHowManyMinute uint) parking.SlotReservation
 }
@@ -39,7 +35,6 @@ type ordersDependencies struct {
 	rateDB    RateDatabase
 	sessions  SessionsInterface
 	paymenter *qiwi.Paymenter
-	biller    BillerInterface
 	parker    ParkerInterface
 }
 
@@ -53,7 +48,6 @@ func NewOrdersApi(
 	rateDB RateDatabase,
 	sessions SessionsInterface,
 	paymenter *qiwi.Paymenter,
-	biller BillerInterface,
 	parker ParkerInterface,
 ) *ordersApi {
 	dependencies := &ordersDependencies{
@@ -61,7 +55,6 @@ func NewOrdersApi(
 		rateDB:    rateDB,
 		sessions:  sessions,
 		paymenter: paymenter,
-		biller:    biller,
 		parker:    parker,
 	}
 
