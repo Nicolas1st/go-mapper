@@ -4,7 +4,9 @@
             <h1> Pricings </h1>
             <div class="orders">
                 {{ range .Data.Orders }}
-                    <p> Sum <strong> {{ .Sum }}</strong> Sum <strong> {{ .Status }}</strong> </p>
+                    <div class="order">
+                        <p> Sum <strong> {{ .Sum }}</strong> Sum <strong> {{ .Status }}</strong> </p>
+                    </div>
                 {{ end }}
             </div>
         </div>
