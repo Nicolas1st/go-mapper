@@ -47,6 +47,7 @@ type ordersApi struct {
 	MakeOrder http.HandlerFunc
 }
 
+// NewOrdersApi - construct a make order function
 func NewOrdersApi(
 	orderDB OrderDatabase,
 	rateDB RateDatabase,

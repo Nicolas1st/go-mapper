@@ -13,18 +13,18 @@ import (
 	"github.com/google/uuid"
 )
 
+// makeOrders - creates an order in the system,
+// creates a payment in the qiwi system,
+// returns the link to the payment page
 func (d *ordersDependencies) makeOrder(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hit order")
 	if !api.IsAuth(d.sessions, r) {
 		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
-		fmt.Println("is auth")
 		return
 	}
 
 	session, valid := api.GetSessionIfValid(d.sessions, r)
 	if !valid {
 		http.Redirect(w, r, api.DefaultEndpoints.OrderPage, http.StatusSeeOther)
-		fmt.Println("is valid")
 		return
 	}
 
