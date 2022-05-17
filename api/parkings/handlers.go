@@ -2,7 +2,6 @@ package parkings
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"yaroslavl-parkings/data/parking"
 )
@@ -17,10 +16,6 @@ func (resource *parkingsDependencies) createParkingPlace(w http.ResponseWriter, 
 
 	// parsing the body of json request
 	err := json.NewDecoder(r.Body).Decode(&parkingPlace)
-	fmt.Println(parkingPlace)
-	fmt.Println(err)
-
-	// return an error if parsing fails
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -32,6 +27,9 @@ func (resource *parkingsDependencies) createParkingPlace(w http.ResponseWriter, 
 	json.NewEncoder(w).Encode(parkingPlace)
 }
 
+// removeParkingByID - removes a parking in the database,
+// if no parking id has been provided,
+//returns bad request status code
 func (resource *parkingsDependencies) removeParkingByID(w http.ResponseWriter, r *http.Request) {
 	jsonBody := struct {
 		ID uint `json:"ID"`
@@ -48,6 +46,7 @@ func (resource *parkingsDependencies) removeParkingByID(w http.ResponseWriter, r
 	json.NewEncoder(w).Encode(jsonBody)
 }
 
+// getAllParkings - returns all parkings places from the database
 func (resource *parkingsDependencies) getAllParkings(w http.ResponseWriter, r *http.Request) {
 	// querying the database
 	parkingsPlaces := resource.datatbase.GetAllParkingPlaces()
