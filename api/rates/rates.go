@@ -1,61 +1,31 @@
 package rates
 
-import (
-	"errors"
-	"fmt"
-	"net/http"
-	"strconv"
-	"yaroslavl-parkings/api"
-)
+import "net/http"
 
-func (d *ratesDependencies) UpdateActiveHoursDiscount(w http.ResponseWriter, r *http.Request) error {
-	if !api.IsAuthAndAdmin(d.sessions, r) {
-		return errors.New("not an admin")
-	}
-
-	discount := r.PostFormValue("discount")
-
-	discountInt, err := strconv.Atoi(discount)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	return d.db.UpdateActiveHoursDiscount(uint(discountInt))
+type ratesDependencies struct {
+	db       DatabaseInterface
+	sessions SessionsInterface
 }
 
-func (d *ratesDependencies) UpdateSluggishHoursDiscount(w http.ResponseWriter, r *http.Request) error {
-	discount := r.PostFormValue("discount")
-
-	discountInt, err := strconv.Atoi(discount)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	return d.db.UpdateSluggishHoursDiscount(uint(discountInt))
+type RatesHandlers struct {
+	UpdateActiveHoursDiscount   func(w http.ResponseWriter, r *http.Request) error
+	UpdateSluggishHoursDiscount func(w http.ResponseWriter, r *http.Request) error
+	UpdateAdultHourlyRate       func(w http.ResponseWriter, r *http.Request) error
+	UpdateRetireeHourlyRate     func(w http.ResponseWriter, r *http.Request) error
 }
 
-func (d *ratesDependencies) UpdateAdultHourlyRate(w http.ResponseWriter, r *http.Request) error {
-	rate := r.PostFormValue("rate")
-
-	rateInt, err := strconv.Atoi(rate)
-	if err != nil {
-		fmt.Println(err)
-		return err
+// NewRatesHandlers - contstructs all functions needed to update the tarriffs data
+// in the database
+func NewRatesHandlers(db DatabaseInterface, sessions SessionsInterface) *RatesHandlers {
+	dependencies := ratesDependencies{
+		db:       db,
+		sessions: sessions,
 	}
 
-	return d.db.UpdateAdultPricePerHour(uint(rateInt))
-}
-
-func (d *ratesDependencies) UpdateRetireeHourlyRate(w http.ResponseWriter, r *http.Request) error {
-	rate := r.PostFormValue("rate")
-
-	rateInt, err := strconv.Atoi(rate)
-	if err != nil {
-		fmt.Println(err)
-		return err
+	return &RatesHandlers{
+		UpdateActiveHoursDiscount:   dependencies.UpdateActiveHoursDiscount,
+		UpdateSluggishHoursDiscount: dependencies.UpdateSluggishHoursDiscount,
+		UpdateAdultHourlyRate:       dependencies.UpdateAdultHourlyRate,
+		UpdateRetireeHourlyRate:     dependencies.UpdateRetireeHourlyRate,
 	}
-
-	return d.db.UpdateRetireePricePerHour(uint(rateInt))
 }
