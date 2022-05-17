@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 	"yaroslavl-parkings/api"
 	"yaroslavl-parkings/api/views/pages"
 	"yaroslavl-parkings/data/order"
@@ -283,12 +284,21 @@ func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
 
 	if api.IsAuthAndAdmin(d.sessions, r) {
 		data.Orders = d.ordersDB.GetAllOrders()
+
+		var wg sync.WaitGroup
+
 		for _, o := range data.Orders {
-			status, err := d.paymenter.GetBillStatus(o.StringID)
-			if err == nil {
-				o.Status = order.OrderStatus(status)
-			}
+			wg.Add(1)
+			go func(o order.Order, wg *sync.WaitGroup) {
+				status, err := d.paymenter.GetBillStatus(o.StringID)
+				if err == nil {
+					o.Status = order.OrderStatus(status)
+				}
+				wg.Done()
+			}(o, &wg)
 		}
+		wg.Wait()
+
 		d.pages.Admin.Orders.Execute(w, data)
 	} else if api.IsAuth(d.sessions, r) {
 		data.Orders = d.ordersDB.GetAllOrdersByUserID(session.UserID)
