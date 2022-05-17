@@ -1,40 +1,40 @@
 {{ define "main" }}
     <main class="main">
-        <h1 class="page-title"> Add Parking Place</h1>
+        <h1 class="page-title"> Добавить Парковочное Место </h1>
         <div class="main-content">
 
             <div id="map"></div>
 
             <form class="order-parking-form" id="add-parking-place">
                 <div class="mb-3 time-field">
-                    <h2> Address </h2>
+                    <h2> Адрес </h2>
                     <div class="mb-3">
-                        <label for="address" class="form-label"> Address </label>
+                        <label for="address" class="form-label"> Адрес </label>
                         <input type="text" class="form-control" name="address" id="address" required>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <h2> Coordinates </h2>
+                    <h2> Координаты </h2>
                     <div class="mb-3 time-field">
-                        <label for="longitude" class="form-label"> Longitude </label>
-                        <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Click on location" required readonly>
+                        <label for="latitude" class="form-label"> Широта </label>
+                        <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Нажмите на Карту" required readonly>
                     </div>
                     <div class="mb-3 time-field">
-                        <label for="latitude" class="form-label"> Latitude </label>
-                        <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Click on location" required readonly>
+                        <label for="longitude" class="form-label"> Долгота </label>
+                        <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Нажмите на Карту" required readonly>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <h2> Number of Places </h2>
+                    <h2>  Количесто Мест </h2>
                     <div class="mb-3 time-field">
-                        <label for="numberOfSlots" class="form-label"> Number Of Slots </label>
+                        <label for="numberOfSlots" class="form-label"> Количесто Мест </label>
                         <input type="number" min="1" class="form-control" name="numberOfSlots" id="numberOfSlots" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;"> Add </button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Добавить </button>
             </form>
         </div>
     </main>

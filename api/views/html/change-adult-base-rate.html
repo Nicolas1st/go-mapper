@@ -1,14 +1,14 @@
 {{ define "main" }}
     <main class="sign-in-form-content">
         <div>
-            <h1> Change Adult Hourly Rate </h1>
+            <h1> Цена За Час Для Взрослых </h1>
             <form action="{{ .Endpoints.ChangeAdultBaseRateHandler }}" method="post" class="order-parking-form">
                 <div class="mb-3">
-                    <label for="rate" class="form-label"> Price Per Hour </label>
-                    <input type="number" min="1" name="rate" id="rate" placeholder="In Rubbles" class="form-control" required>
+                    <label for="rate" class="form-label"> Цена За Час </label>
+                    <input type="number" min="1" name="rate" id="rate" placeholder="В Рублях" class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;"> Update </button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Обновить </button>
             </form>
         </div>
     </main>

@@ -1,20 +1,20 @@
 {{ define "main" }}
     <main class="sign-in-form-content">
         <div>
-            <h1 class="page-title"> Sign In </h1>
+            <h1 class="page-title"> Войти </h1>
             
             <form class="order-parking-form" method="POST" action="{{ .Endpoints.AuthenticateHandler }}">
                 <div class="mb-3">
-                    <label for="username" class="form-label"> Login </label>
+                    <label for="username" class="form-label"> Логин </label>
                     <input type="text" class="form-control" name="username" id="username" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label"> Password </label>
+                    <label for="password" class="form-label"> Пароль </label>
                     <input type="password" class="form-control" name="password" id="password" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;"> Sign In </button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;"> Войти </button>
             </form>
         </div>
     </main>

@@ -1,11 +1,12 @@
 {{ define "main" }}
     <main class="sign-in-form-content">
         <div class="pricing-container">
-            <h1> Pricings </h1>
+            <h1> Заказы </h1>
             <div class="orders">
                 {{ range .Data.Orders }}
                     <div class="order">
-                        <p> Sum <strong> {{ .Sum }}</strong> Sum <strong> {{ .Status }}</strong> </p>
+                        <p> Сумма <strong> {{ .Sum }}</strong> </p>
+                        <p> Статус <strong> {{ .Status }}</strong> </p>
                     </div>
                 {{ end }}
             </div>
