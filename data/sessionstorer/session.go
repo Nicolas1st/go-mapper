@@ -22,10 +22,6 @@ func NewSession(user *user.User) *Session {
 	}
 }
 
-func (s *Session) GetUser() *user.User {
-	return s.User
-}
-
 func (s *Session) IsExpired() bool {
 	return s.ExpiresAt.Before(time.Now())
 }
