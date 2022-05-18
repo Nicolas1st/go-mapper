@@ -6,7 +6,7 @@ import (
 	"yaroslavl-parkings/data/rate"
 	"yaroslavl-parkings/data/user"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +25,7 @@ type Database struct {
 // terminates the program if it's not possible to set up
 // the connection
 func NewDatabase(dsn string) *Database {
-	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	conn, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
