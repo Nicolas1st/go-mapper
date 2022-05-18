@@ -27,7 +27,8 @@ type SessionsInterface interface {
 }
 
 type ParkerInterface interface {
-	ReservePlace(parkingID uint, startTime time.Time, forHowManyMinute uint) parking.SlotReservation
+	FindSlot(parkingID uint, startTime, endTime time.Time) (parking.ParkingSlot, bool)
+	CreateSlotReservation(slot parking.ParkingSlot, from, until time.Time) error
 }
 
 type ordersDependencies struct {

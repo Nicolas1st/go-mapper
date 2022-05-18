@@ -30,6 +30,12 @@ func (d *ordersDependencies) makeOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// extract values from the form
+	parkingID, err := strconv.Atoi(r.PostFormValue("parking-id"))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	startHour, err := strconv.Atoi(r.PostFormValue("start-hour"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -49,6 +55,24 @@ func (d *ordersDependencies) makeOrder(w http.ResponseWriter, r *http.Request) {
 	endMinute, err := strconv.Atoi(r.PostFormValue("end-minute"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// compute times
+	currentTime := time.Now()
+	from := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), startHour, startMinute, 0, 0, currentTime.Location())
+	to := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), endHour, endMinute, 0, 0, currentTime.Location())
+
+	// check for free places
+	slot, found := d.parker.FindSlot(uint(parkingID), from, to)
+	if !found {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	// create reservation
+	if err := d.parker.CreateSlotReservation(slot, from, to); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
