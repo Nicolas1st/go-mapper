@@ -11,8 +11,7 @@ import (
 )
 
 type OrderDatabase interface {
-	CreateOrder(user user.User, sum uint, paymentURL, stringID string) (uint, error)
-	MarkOrderAsPaid(id uint) error
+	CreateOrder(user user.User, sum uint, paymentURL, stringID string, paymentTimeout time.Time) (uint, error)
 }
 
 type RateDatabase interface {

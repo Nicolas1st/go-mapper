@@ -37,5 +37,9 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
+    if (addressField.value == "") {
+        return
+    }
+
     form.submit();
 });

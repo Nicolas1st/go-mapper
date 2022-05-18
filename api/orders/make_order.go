@@ -109,7 +109,7 @@ func (d *ordersDependencies) makeOrder(w http.ResponseWriter, r *http.Request) {
 	qiwiPaymentFormURL, _ := d.paymenter.CreateNewBill(qiwiID, sum, qiwi.RUB, timeOut, "Parking App")
 
 	// record the information about th order
-	orderID, _ := d.orderDB.CreateOrder(*session.User, uint(sum), qiwiPaymentFormURL, qiwiID)
+	orderID, _ := d.orderDB.CreateOrder(*session.User, uint(sum), qiwiPaymentFormURL, qiwiID, timeOut)
 
 	http.Redirect(w, r, api.DefaultEndpoints.PaymentPage+fmt.Sprintf("?orderID=%v", orderID), http.StatusSeeOther)
 }
