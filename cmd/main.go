@@ -40,7 +40,15 @@ func main() {
 	paymenter := qiwi.NewPaymenter(APP_QIWIKEY)
 
 	// init database
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", APP_DATABASE_HOST, APP_DATABASE_USER, APP_DATABASE_PASSWORD, APP_DATABASE_NAME, APP_DATABASE_PORT)
+	dsn := fmt.Sprintf(
+		"host=%v user=%v password=%v dbname=%s port=%v sslmode=disable",
+		APP_DATABASE_HOST,
+		APP_DATABASE_USER,
+		APP_DATABASE_PASSWORD,
+		APP_DATABASE_NAME,
+		APP_DATABASE_PORT,
+	)
+
 	db := data.NewDatabase(dsn)
 	db.InitTables()
 
