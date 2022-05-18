@@ -1,15 +1,17 @@
 {{ define "main" }}
-    <main class="sign-in-form-content">
-        <div class="pricing-container">
-            <h1> Заказы </h1>
-            <div class="orders">
+    <main class="orders-page">
+        <h1> Заказы </h1>
+        <div class="orders">
+            {{ if not .Data.Orders }} 
+                <p class="orders-info"> Заказов еще не было </p>
+            {{ else }}
                 {{ range .Data.Orders }}
                     <div class="order">
-                        <p> Сумма <strong> {{ .Sum }}</strong> </p>
-                        <p> Статус <strong> {{ .Status }}</strong> </p>
+                        <p class="order-sum"> <strong>Сумма:</strong> {{ .Sum }} </p>
+                        <p class="order-status"> <strong>Статус:</strong> {{ .Status }} </p>
                     </div>
                 {{ end }}
-            </div>
+            {{end}}
         </div>
     </main>
 {{ end }}
