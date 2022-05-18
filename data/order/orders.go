@@ -62,6 +62,8 @@ func (db *OrderDB) MarkOrderAsPaid(id uint) error {
 	return nil
 }
 
+// GetOrderPaymentURLByID - returns the url
+// needed to complete the payment
 func (db *OrderDB) GetOrderPaymentURLByID(id uint) string {
 	var order Order
 	result := db.conn.First(&order, id)
@@ -72,6 +74,7 @@ func (db *OrderDB) GetOrderPaymentURLByID(id uint) string {
 	return order.PaymentURL
 }
 
+// GetOrderByID - returns an order based on id
 func (db *OrderDB) GetOrderByID(id uint) (*Order, error) {
 	var order Order
 	result := db.conn.First(&order, id)
@@ -82,6 +85,7 @@ func (db *OrderDB) GetOrderByID(id uint) (*Order, error) {
 	return &order, nil
 }
 
+// GetAllOrders - returns all orders
 func (db *OrderDB) GetAllOrders() []Order {
 	var orders []Order
 	db.conn.Find(&orders)
@@ -89,6 +93,7 @@ func (db *OrderDB) GetAllOrders() []Order {
 	return orders
 }
 
+// GetAllOrdersByUserID - gets all orders for a specific user
 func (db *OrderDB) GetAllOrdersByUserID(uid uint) []Order {
 	var orders []Order
 	db.conn.Where(&Order{UserID: uid}).Find(&orders)
