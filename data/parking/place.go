@@ -2,7 +2,6 @@ package parking
 
 import (
 	"fmt"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -23,6 +22,11 @@ func (db ParkingDB) StoreParkingPlace(parkingPlace *ParkingPlace) (*ParkingPlace
 		return parkingPlace, fmt.Errorf("could not store the parking place")
 	}
 
+	// create corresponding parking slots
+	for i := 0; i < parkingPlace.NumberOfSlots; i++ {
+		db.CreateParkingSlot(i, *parkingPlace)
+	}
+
 	return parkingPlace, nil
 }
 
@@ -37,8 +41,4 @@ func (db ParkingDB) GetAllParkingPlaces() []ParkingPlace {
 	db.conn.Find(&parkingPlaces)
 
 	return parkingPlaces
-}
-
-func (db ParkingDB) ReservePlace(parkingID uint, startTime time.Time, duration uint) SlotReservation {
-	return SlotReservation{}
 }
