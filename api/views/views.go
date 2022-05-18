@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 	"yaroslavl-parkings/api"
 	"yaroslavl-parkings/api/views/pages"
 	"yaroslavl-parkings/data/order"
@@ -29,6 +30,7 @@ type OrderDatabaseInterface interface {
 	GetOrderByID(id uint) (*order.Order, error)
 	GetAllOrders() []order.Order
 	GetAllOrdersByUserID(uid uint) []order.Order
+	MarkOrderAsPaid(id uint) error
 }
 
 type viewsDependencies struct {
@@ -288,15 +290,24 @@ func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
 		var wg sync.WaitGroup
 
 		for _, o := range data.Orders {
-			wg.Add(1)
-			go func(o order.Order, wg *sync.WaitGroup) {
-				status, err := d.paymenter.GetBillStatus(o.StringID)
-				if err == nil {
-					o.Status = order.OrderStatus(status)
-				}
-				wg.Done()
-			}(o, &wg)
+			// request order status only if the payment time is not over
+			if o.PaymentTimeout.After(time.Now()) {
+				continue
+			} else {
+				wg.Add(1)
+				go func(o order.Order, wg *sync.WaitGroup) {
+					status, err := d.paymenter.GetBillStatus(o.StringID)
+					if status == qiwi.PAID {
+						d.ordersDB.MarkOrderAsPaid(o.ID)
+					}
+					if err == nil {
+						o.Status = order.OrderStatus(status)
+					}
+					wg.Done()
+				}(o, &wg)
+			}
 		}
+
 		wg.Wait()
 
 		d.pages.Admin.Orders.Execute(w, data)
