@@ -30,11 +30,11 @@ func getEnvVar(key string) string {
 func main() {
 	// read in the env vars
 	APP_QIWIKEY := getEnvVar("APP_QIWIKEY")
-	APP_DATABASE_HOST := getEnvVar("PP_DATABASE_HOST")
-	APP_DATABASE_PORT := getEnvVar("PP_DATABASE_PORT")
-	APP_DATABASE_PASSWORD := getEnvVar("PP_DATABASE_PASSWORD")
-	APP_DATABASE_NAME := getEnvVar("PP_DATABASE_NAME")
-	APP_DATABASE_USER := getEnvVar("PP_DATABASE_USER")
+	APP_DATABASE_HOST := getEnvVar("APP_DATABASE_HOST")
+	APP_DATABASE_PORT := getEnvVar("APP_DATABASE_PORT")
+	APP_DATABASE_PASSWORD := getEnvVar("APP_DATABASE_PASSWORD")
+	APP_DATABASE_NAME := getEnvVar("APP_DATABASE_NAME")
+	APP_DATABASE_USER := getEnvVar("APP_DATABASE_USER")
 
 	// init qiwi
 	paymenter := qiwi.NewPaymenter(APP_QIWIKEY)
