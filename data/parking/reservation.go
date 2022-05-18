@@ -16,15 +16,24 @@ type SlotReservation struct {
 	ParkingSlotID int
 	ParkingSlot   ParkingSlot
 
-	OccupiedFrom  *time.Time
-	OccupiedUntil *time.Time
+	OccupiedFrom  time.Time
+	OccupiedUntil time.Time
 }
 
-func (db ParkingDB) StoreSlotReservation(reservation *SlotReservation) (*SlotReservation, error) {
-	result := db.conn.Create(reservation)
-	if result.Error != nil {
-		return reservation, fmt.Errorf("could not store the parking place")
+func (db ParkingDB) CreateSlotReservation(slot ParkingSlot, from, until time.Time) error {
+	r := SlotReservation{
+		ParkingPlace:   slot.ParkingPlace,
+		ParkingPlaceID: int(slot.ParkingPlaceID),
+		ParkingSlot:    slot,
+		ParkingSlotID:  int(slot.ID),
+		OccupiedFrom:   from,
+		OccupiedUntil:  until,
 	}
 
-	return reservation, nil
+	result := db.conn.Create(&r)
+	if result.Error != nil {
+		return fmt.Errorf("could not store the parking place")
+	}
+
+	return nil
 }

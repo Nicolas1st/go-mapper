@@ -1,6 +1,7 @@
 package parking
 
 import (
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -11,41 +12,48 @@ type ParkingSlot struct {
 	Number         int
 	ParkingPlaceID uint
 	ParkingPlace   ParkingPlace
-
-	OccupiedFrom  *time.Time
-	OccupiedUntil *time.Time
 }
 
+// CreateParkingSlot - creates parking slot
 func (db *ParkingDB) CreateParkingSlot(number int, parkingPlace ParkingPlace) error {
 	slot := ParkingSlot{
 		Number:         number,
 		ParkingPlaceID: parkingPlace.ID,
 		ParkingPlace:   parkingPlace,
-
-		OccupiedFrom:  nil,
-		OccupiedUntil: nil,
 	}
 
 	return db.conn.Create(&slot).Error
 }
 
-func (db *ParkingDB) OccupySlot(id uint, from, until *time.Time) error {
-	var slot ParkingSlot
+// ReservePlace - reserves a place in specifed parking
+func (db ParkingDB) FindSlot(parkingID uint, startTime, endTime time.Time) (ParkingSlot, bool) {
+	var slots []ParkingSlot
+	db.conn.Where(&ParkingSlot{ParkingPlaceID: parkingID}).Find(&slots)
+	fmt.Println("parking")
 
-	if err := db.conn.First(&slot, id).Error; err != nil {
-		return err
+	for _, s := range slots {
+		fmt.Println("slot")
+		var reservations []SlotReservation
+		db.conn.Where(&SlotReservation{ParkingSlotID: int(s.ID)}).Find(&reservations)
+
+		numberOfOverlappingReservations := 0
+		for _, r := range reservations {
+			fmt.Println("reservation")
+			if !((startTime.Before(r.OccupiedUntil)) || (r.OccupiedFrom.Before(endTime))) {
+				numberOfOverlappingReservations++
+			}
+		}
+
+		fmt.Println("reservations")
+		fmt.Println(numberOfOverlappingReservations)
+		if numberOfOverlappingReservations == 0 {
+			return s, true
+		}
+
+		numberOfOverlappingReservations = 0
 	}
 
-	slot.OccupiedFrom = from
-	slot.OccupiedUntil = until
+	fmt.Println("outside")
 
-	return nil
-}
-
-func (db *ParkingDB) CheckIfSlotIsFree(from, until *time.Time) bool {
-	return true
-}
-
-func (db *ParkingDB) FindFreeSlots(parkingID uint) []ParkingSlot {
-	return []ParkingSlot{}
+	return ParkingSlot{}, false
 }
