@@ -2,6 +2,7 @@ package order
 
 import (
 	"errors"
+	"time"
 	"yaroslavl-parkings/data/user"
 
 	"gorm.io/gorm"
@@ -16,12 +17,13 @@ const (
 
 type Order struct {
 	gorm.Model
-	StringID   string
-	UserID     uint
-	User       user.User
-	Sum        uint
-	Status     OrderStatus
-	PaymentURL string
+	StringID       string
+	UserID         uint
+	User           user.User
+	Sum            uint
+	Status         OrderStatus
+	PaymentURL     string
+	PaymentTimeout time.Time
 }
 
 // CreateOrder - creates order in the database
@@ -31,14 +33,16 @@ func (db *OrderDB) CreateOrder(
 	sum uint,
 	paymentURL,
 	stringID string,
+	paymentTimeout time.Time,
 ) (uint, error) {
 	order := &Order{
-		UserID:     user.ID,
-		User:       user,
-		Sum:        sum,
-		Status:     UNPAID,
-		PaymentURL: paymentURL,
-		StringID:   stringID,
+		UserID:         user.ID,
+		User:           user,
+		Sum:            sum,
+		Status:         UNPAID,
+		PaymentURL:     paymentURL,
+		StringID:       stringID,
+		PaymentTimeout: paymentTimeout,
 	}
 
 	result := db.conn.Create(order)
