@@ -291,7 +291,7 @@ func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
 
 		for _, o := range data.Orders {
 			// request order status only if the payment time is not over
-			if o.PaymentTimeout.After(time.Now()) {
+			if time.Now().After(o.PaymentTimeout) {
 				continue
 			} else {
 				wg.Add(1)
