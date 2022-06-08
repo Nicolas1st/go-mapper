@@ -20,7 +20,7 @@ services:
     image: postgres:latest
     container_name: database
     environment:
-      - POSTGRES_USER="postgres"
-      - POSTGRES_PASSWORD="password"
-      - POSTGRES_DB="parkings"
-      - DATABASE_HOST="database"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=parkings
+      - DATABASE_HOST=database
