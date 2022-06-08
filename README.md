@@ -4,9 +4,12 @@
 
 Web-application for ordering parking places
 
-with the qiwi payments system attached
+with qiwi payments + admin page
 
-in public places like universities and offices
+## Workflow
+
+<img src="./workflow.gif" alt="gif with workflow" width="1000px"/>
+
 
 ## Contents
   - [Structure](#structure)
@@ -52,14 +55,16 @@ in public places like universities and offices
 
 ## How To Run
 
-1) Configure the environment variables in [docker-compose.yml](./docker-compose.yml) if needed
+1) Create the private key on the qiwi payment website
 
-2) Launch the app
+2) Configure the environment variables in [docker-compose.yml](./docker-compose.yml) if needed
+
+3) Launch the app
 
 ```sh
 docker-compose up
 ```
 
-3) Connect to the app using your browser of choice
+4) Connect to the app using your browser of choice
 
    with the credentials and app port that were specified in [docker-compose.yml](./docker-compose.yml)
