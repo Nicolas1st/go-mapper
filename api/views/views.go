@@ -11,6 +11,7 @@ import (
 	"yaroslavl-parkings/data/order"
 	"yaroslavl-parkings/data/rate"
 	"yaroslavl-parkings/data/sessionstorer"
+	"yaroslavl-parkings/data/user"
 	"yaroslavl-parkings/pkg/qiwi"
 )
 
@@ -281,7 +282,9 @@ func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var data struct {
-		Orders []order.Order
+		Orders   []order.Order
+		Users    []user.User
+		Username string
 	}
 
 	if api.IsAuthAndAdmin(d.sessions, r) {
@@ -290,6 +293,7 @@ func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
 		var wg sync.WaitGroup
 
 		for _, o := range data.Orders {
+			data.Users = append(data.Users, o.User)
 			// request order status only if the payment time is not over
 			if o.PaymentTimeout.After(time.Now()) {
 				continue
@@ -313,6 +317,7 @@ func (d *viewsDependencies) OrdersPage(w http.ResponseWriter, r *http.Request) {
 		d.pages.Admin.Orders.Execute(w, data)
 	} else if api.IsAuth(d.sessions, r) {
 		data.Orders = d.ordersDB.GetAllOrdersByUserID(session.UserID)
+		data.Username = session.User.Username
 		d.pages.Private.Orders.Execute(w, data)
 	} else {
 		http.Redirect(w, r, api.DefaultEndpoints.LoginPage, http.StatusSeeOther)

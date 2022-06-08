@@ -162,7 +162,7 @@ body {
     border-radius: 10px;
 }
 
-.order-sum, .order-status {
+.order-sum, .order-status, .order-id, .order-uid {
     margin: 0;
 }
 

@@ -7,8 +7,10 @@
             {{ else }}
                 {{ range .Data.Orders }}
                     <div class="order">
-                        <p class="order-sum"> <strong>Сумма:</strong> {{ .Sum }} </p>
-                        <p class="order-status"> <strong>Статус:</strong> {{ .Status }} </p>
+                        <p class="order-id"> <strong> ID :</strong> {{ .ID }} </p>
+                        <p class="order-uid"> <strong> UID :</strong> {{ .UserID }} </p>
+                        <p class="order-sum"> <strong> Сумма: </strong> {{ .Sum }} </p>
+                        <p class="order-status"> <strong> Статус: </strong> {{ .Status }} </p>
                     </div>
                 {{ end }}
             {{end}}
