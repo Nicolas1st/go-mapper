@@ -23,23 +23,19 @@ with qiwi payments + admin page
 
 - [pkg/](./pkg) contains [qiwi](./pkg/qiwi/) package used for working with qiwi api
 
-- [handlers/](./handlers/) contains [REST API](./handlers/api/) and [view functions](./handlers/views/) for server side rendering
+- [auth/](./api/auth/) authentication API
 
-- [api/](./data/) contains all network request handling functions
+- [personal/](./api/personal/) API for creating an acccount
 
-    - [auth/](./api/auth/) authentication API
+- [orders/](./api/orders/) API for making orders
 
-    - [personal/](./api/personal/) API for creating an acccount
+- [rates/](./api/rates/) API for setting payment rates
 
-    - [orders/](./api/orders/) API for making orders
+- [parkings/](./api/parkings/) REST API for creating parking places
 
-    - [rates/](./api/rates/) API for setting payment rates
+- [views/](./api/views/) used for view functions
 
-    - [parkings/](./api/parkings/) REST API for creating parking places
-
-    - [views/](./data/sessionstorer/) used for view functions
-
-    - [middlewares/](./data/middlewares/) contains middleware for wrapping APIs to avoid having using js on the client side if possible
+- [middlewares/](./api/middlewares/) contains middleware for wrapping APIs to avoid having using js on the client side if possible
 
 - [data/](./data/) contains packages for working with the database like
 
